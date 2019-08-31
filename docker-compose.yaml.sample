@@ -1,0 +1,33 @@
+version: '3.3'
+
+services:
+  olb:
+    restart    : always
+    image      : olb
+    ports      :
+      - "8787:8787"
+    networks   :
+      - rojob
+    volumes    :
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    environment:
+      BACKEND_PORT: 8787
+      FILTER_PATH : Names
+      FILTER_VALUE: /rojob_rojob
+      PORT        : 8787
+
+  rojob:
+    restart       : always
+    image         : rojob
+    volumes       :
+      - "/roJob/work:/work:rw"
+    ports         :
+      - 8787
+    networks      :
+      - rojob
+    environment   :
+      APIKEY: "670278dc428eefa39c818fc786bc5500d3d94a6b6d488a791ecb87323b52555d6a98117e479c82e37c123d3556623d7fef8e18a5f2c916cc7f3d5641090c5ef1"
+      WORK: /work
+
+networks:
+    rojob:

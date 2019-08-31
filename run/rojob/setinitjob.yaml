@@ -1,0 +1,22 @@
+jobs:
+  #-----------------
+  - name: Check data
+    exec: |
+      _$(args.job).$_("Please provide the job as a json string.");
+      _$(args.name).$_("Please provide the name of the file.");
+      if (!args.name.endsWith(".yaml") && !args.name.endsWith(".json")) {
+        throw "Filename needs to be .yaml or .json";
+      }
+      if (args.name.replace(/[\.yaml|\.json]$/, "").replace(/\\+/g, "/").match(/\//)) {
+        throw "Filename can not refer to other folders.";
+      }
+
+  #-------------------
+  - name: Set Init Job
+    from: 
+      - Check data
+    exec: |
+      io.writeFileString(global.ROJOB.WORK_DIR + "/.rojob/" + args.name, args.job);
+
+todo:
+  - Set Init Job

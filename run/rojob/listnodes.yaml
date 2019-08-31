@@ -1,0 +1,29 @@
+ojob:
+  sequential: true
+
+jobs:
+  #------------------------
+  - name: List master nodes
+    exec: |
+      try {
+        __pm.nodes = $path($ch("__cluster::" + global.ROJOB.CNAME).getAll(), "[].{ host: h, port: p }");
+      } catch(e) {
+        __pm.error = String(e);
+      }
+
+  #---------------------
+  - name: Get async jobs
+    exec: |
+      $from(__pm.nodes)
+      .equals("host", args.host)
+      .equals("port", args.port)
+      .at(0).jobs = $from(io.listFilenames(global.ROJOB.WORK_DIR + "/.rojob", true))
+                    .starts(args.host + "-" + args.port)
+                    .ends(".rojob")
+                    .select();
+
+
+todo:
+  - name: List master nodes
+  - name: Get async jobs
+    args: __pm.nodes

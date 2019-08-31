@@ -1,0 +1,85 @@
+ojob:
+  async: true
+  logToConsole: false
+
+todo:
+  - Detect OS
+  - Detect Python version
+  - Generate API key
+  - Generate Python script
+  - Generate OS script
+  - Generate Watchdog oJob
+
+jobs:
+  #----------------
+  - name: Detect OS
+    exec: |
+      ow.loadFormat();
+      global.os = (ow.format.getOS().match(/windows/i) ? "win" : "unix");
+      log("OS type: " + global.os);
+
+  #----------------------------
+  - name: Detect Python version
+    exec: |
+      var res = sh("python --version");
+      global.python = (res.match(/ 2\./) ? 2 : 3);
+      log("Python version: " + global.python);
+
+  #-----------------------
+  - name: Generate API key
+    exec: |
+      var key = sha512(genUUID());
+      io.writeFileString(getOPackPath("roJob") + "/.apikey", key);
+      global.key = key;
+      log("Generated new key: " + key);
+
+  #-----------------------------
+  - name: Generate Python script 
+    deps:
+      - Detect Python version
+      - Generate API key
+    exec: |
+      var script;
+      if (global.python == 2) {
+        script = io.readFileString(getOPackPath("roJob") + "/rojob.py.sample2");
+      } else {
+        script = io.readFileString(getOPackPath("roJob") + "/rojob.py.sample3");
+      }
+
+      script = script.replace(/APIKEY = \"[^"]*\"/, "APIKEY = \"" + global.key + "\"");
+      io.writeFileString(getOPackPath("roJob") + "/rojob.py", script);
+      log("Generated " + getOPackPath("roJob") + "/rojob.py.");
+
+  #-------------------------
+  - name: Generate OS script
+    deps:
+      - Detect OS
+      - Generate Python script
+    exec: |
+      var script = "";
+      if (global.os == "win") {
+         script += "@echo off\n\n";
+         script += "python " + getOPackPath("roJob") + "\\rojob.py %*\n";
+         io.writeFileString("rojob.bat", script);
+         log("Generated rojob.bat.");
+      } else {
+         script += "#!/bin/sh\n\n";
+         script += "python " + getOPackPath("roJob") + "/rojob.py \"$@\"\n";
+         io.writeFileString("rojob.sh", script);
+         log("Generated rojob.sh.");
+      }
+
+  #-----------------------------
+  - name: Generate Watchdog oJob
+    deps:
+      - Detect OS
+    exec: |
+      io.writeFileString("watchdog.yaml", templify(io.readFileString(getOPackPath("roJob") + "/watchdog.yaml.sample"), { 
+         win: (global.os == "win"), 
+         opackHome: getOPackPath("roJob").replace(/\\/g, "/"),
+         openafHome: getOpenAFPath().replace(/\\/g, "/"),
+         //ports: [ 8787, 8788, 8789 ]
+         ports: [ 8787 ]
+      }));
+      log("Generated watchdog.yaml.");
+

@@ -1,0 +1,79 @@
+author: Nuno Aguiar
+scripts:
+  preerase: ''
+  posterase: ''
+  preinstall: ''
+  postinstall: ''
+keywords:
+  - ojob
+  - service
+bugs:
+  url: 'https://github.com/OpenAF/roJob/issues'
+repository:
+  type: http
+  url: 'https://github.com/OpenAF/roJob'
+description: oJobs as a service
+name: roJob
+main: ''
+mainJob: ''
+license: 'https://raw.githubusercontent.com/OpenAF/roJob/master/LICENSE'
+version: '20190829'
+dependencies:
+  openaf: '>=20190801'
+files:
+  - genScripts.yaml
+  - LICENSE
+  - Dockerfile
+  - rojob.js
+  - watchdog.yaml.sample
+  - .package.yaml
+  - .odoc.db
+  - README.md
+  - docker-compose.yaml.sample
+  - roJobService.js
+  - rojob.py.sample2
+  - rojob.py.sample3
+  - run/in/zipfolder.yaml
+  - run/in/gitclone.yaml
+  - run/rojob/echo.yaml
+  - run/rojob/getmem.yaml
+  - run/rojob/setinitjob.yaml
+  - run/rojob/killjob.yaml
+  - run/rojob/cleanresult.yaml
+  - run/rojob/showvars.yaml
+  - run/rojob/listnodes.yaml
+  - run/rojob/stopall.yaml
+  - run/rojob/clearinitjobs.yaml
+  - run/rojob/getresult.yaml
+  - run/rojob/stop.yaml
+  - run/rojob/cleanwork.yaml
+  - run/rojob/addnode.yaml
+  - run/rojob/listwork.yaml
+filesHash:
+  genScripts.yaml: 365d20e61e141d92b384628a4cc425022b54989e
+  LICENSE: 7df059597099bb7dcf25d2a9aedfaf4465f72d8d
+  Dockerfile: c85832ece2910ffee3c0ea3139a7be35f7830344
+  rojob.js: cd285ea9323409f35dcd6c3d4b3388026ebc6b56
+  watchdog.yaml.sample: d8c5cb01be16a3fa6205fabda26eb5db9ed5fa64
+  .odoc.db: cb2f43ca95efcca480d644be0207e0393eb7a671
+  README.md: 7af060189ec1a74c6c564f45c7b14533852e1658
+  docker-compose.yaml.sample: 2259a1f8edbee5ad099bb40f9bfbca8c8334ab23
+  roJobService.js: 636c572d4b851f8244a5245e32b81f901976d6ce
+  rojob.py.sample2: 906d44671a8c3f340c985b502283c674efe30a7f
+  rojob.py.sample3: 26814bf843c3a2dd5e3a3f623c2254a66045c4c5
+  run/in/zipfolder.yaml: 7dd205e3967c952b4306fbbe8d837ca9421c77de
+  run/in/gitclone.yaml: 2a9ffbb5371da823ca3954777bb44657588e03b8
+  run/rojob/echo.yaml: 66102c6963586aa8c98d2458c6b527ca6f1d86ae
+  run/rojob/getmem.yaml: 44ec004c1cccf0fdaff0656fab7d1a037d71d2ae
+  run/rojob/setinitjob.yaml: b82728f004c5bb52e57550bb4e9df2d91b8108b4
+  run/rojob/killjob.yaml: cdac3a35fcf46380af643c4374dc6cfbcfb02d89
+  run/rojob/cleanresult.yaml: a4f847a133b1c03602bc16c22d29d3b08d2840bc
+  run/rojob/showvars.yaml: f7b331ff291c12417d29cb36c2d1a63bec300d01
+  run/rojob/listnodes.yaml: e2dd9f5eb5e96a64e8c921a0ec24614428271b27
+  run/rojob/stopall.yaml: 41dce46e837a51d5f313ca4c12d5d04c763eb885
+  run/rojob/clearinitjobs.yaml: 47666825ef08bffdae0c06b545423c9fb1638d72
+  run/rojob/getresult.yaml: 6f57276c603a96c82ae098ef988f51b6cc3a2ab7
+  run/rojob/stop.yaml: f69a3ed28eda663895692daa9c647b43036c863f
+  run/rojob/cleanwork.yaml: c431826fe67d0a35e468c792be0e367849cbd769
+  run/rojob/addnode.yaml: 36cc6d1a31e4c215af29c1f171cdd5664edb46cf
+  run/rojob/listwork.yaml: 69691b5a218479dcd49291d3f644a7643185a67d

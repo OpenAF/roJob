@@ -1,0 +1,66 @@
+# Template          : Quick watchdog to ensure processes are running
+# Author            : Nuno Aguiar
+# How to run        : ojob watchdog.yaml (in crontab every x minutes)
+# oPack dependencies: latest ojob-common;
+
+include:
+  - oJobWatchDog.yaml
+
+ojob:
+  logToFile   :
+    logFolder            : "{{opackHome}}/watchdog.logs"
+    HKhowLongAgoInMinutes: 10080                  # keep logs for 7 days
+    setLogOff            : true
+  logToConsole: false
+  logJobs     : false
+  logArgs     : false
+  unique      :
+    pidFile     : "{{opackHome}}/watchdog.pid"
+    killPrevious: true
+  checkStall  :
+    everySeconds    : 1
+    killAfterSeconds: 60
+  opacks      :
+    - oJob-common
+
+todo:
+  {{#each ports}}
+  - Watchdog for roJob {{this}}
+  {{/each}}
+
+jobs:
+  {{#each ports}}
+  #-------------------------------
+  - name: Watchdog for roJob {{this}}
+    to  :
+      - oJob WatchDog
+    args:
+      nameOfDog   : Process roJob dog {{this}}
+      quiet       : false
+      #jobToNotify : Barking to someone
+      {{#if ../win}}
+      cmdToStart  : "start /b {{../openafHome}}openaf.bat -f {{../opackHome}}/roJobService.js -e \"LOG={{../opackHome}}/logs PORT={{this}}\" 2>&1 > {{../opackHome}}/roJob_{{port}}.out"
+      {{else}}
+      cmdToStart  : "nohup {{../openafHome}}openaf -f {{../opackHome}}/roJobService.js -e \"LOG={{../opackHome}}/logs PORT={{this}}\" 2>&1 > {{../opackHome}}/roJob_{{port}}.out &"
+      {{/if}}
+      workDirStart: "{{../opackHome}}"
+
+      checks      :
+        log   :
+          folder  : "{{../opackHome}}/logs"
+          fileRE  : "log-{{this}}-.+\\.log"
+          histFile: "{{../opackHome}}/.watchdog.roJob.history.{{this}}"  # where to keep track of what was previously saw on the log file
+          stringRE:
+            - java\.lang\.OutOfMemory
+
+        custom:
+          exec: |
+            try {
+              ow.loadFormat();
+              return ow.format.testPort("127.0.0.1", {{this}});
+            } catch(e) {
+              logErr("Error: " + String(e));
+              return false;
+            }
+
+  {{/each}}

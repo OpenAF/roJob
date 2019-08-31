@@ -1,0 +1,14 @@
+jobs:
+  #----------------------
+  - name: Clear Init Jobs
+    exec: |
+      $from(io.listFiles(global.ROJOB.WORK_DIR + "/.rojob").files)
+      .ends("filename", ".yaml")
+      .orEnds("filename", ".json")
+      .select((r) => {
+        log("Clearing the job " + r.filename + "...");
+        io.rm(r.canonicalPath);
+      })
+
+todo:
+  - Clear Init Jobs

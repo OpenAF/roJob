@@ -1,0 +1,26 @@
+ojob:
+  sequential: true
+
+todo:
+  - List work
+
+jobs:
+  #------------------
+  - name: List work
+    exec: |
+      args.path = _$(args.path).default("");
+      var plst = global.ROJOB.WORK_DIR + "/" + args.path;
+      try {
+        if (io.fileInfo(plst).canonicalPath.indexOf(global.ROJOB.WORK_DIR) != 0) plst = global.ROJOB.WORK_DIR + "/";
+
+        log("Listing " + plst);
+
+        var lst = listFilesRecursive(plst);
+        lst = $from(lst)
+              .notStarts("filepath", global.ROJOB.WORK_DIR + "/.rojob")
+              .select();
+
+        __pm.work = lst;
+      } catch(e) {
+        __pm.error = String(e);
+      }

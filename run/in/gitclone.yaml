@@ -1,0 +1,56 @@
+rojob:
+  name: gitclone
+
+ojob:
+  sequential: true
+  catch     : |
+    __pm.error = String(exception);
+    throw exception;
+
+jobs:
+  #-----------------
+  - name: Check args
+    exec: |
+      _$(args.giturl).$_("Please provide a giturl.");
+      global.giturl = args.giturl;
+
+      _$(args.target).$_("Please provide a target.");
+      global.target = global.ROJOB.WORK_DIR + "/" + args.target;
+      if ( !(io.getCanonicalPath(global.target).replace(/\\+/g, "/").startsWith(global.ROJOB.WORK_DIR + "/")) ||
+            (io.getCanonicalPath(global.target).replace(/\\+/g, "/").startsWith(global.ROJOB.WORK_DIR + "/.rojob")) ) 
+        throw "Invalid path: '" + global.target + "'.";
+
+      io.mkdir(global.target);
+      
+  #-----------------
+  - name: Clone repo
+    exec: |
+      if (!(io.fileExists(global.target + "/.git"))) {
+        plugin("GIT");
+        var git = new GIT();
+        git.clone(global.giturl, global.target, false, void 0, args.branch, args.user, args.pass);
+        git.close();
+        __pm.action = "clone";
+      }  
+  #----------------
+  - name: Pull repo
+    exec: |
+      if (io.fileExists(global.target + "/.git")) {
+        plugin("GIT");
+        var git = new GIT(global.target);
+        git.pull();
+        git.close();
+        __pm.action = "pull";
+      }  
+
+  #--------------
+  - name: Get GIT
+    deps:
+      - Check args
+    to  :
+      - Pull repo
+      - Clone repo
+
+todo:
+  - Check args
+  - Get GIT

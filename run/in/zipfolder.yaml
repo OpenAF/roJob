@@ -1,0 +1,65 @@
+rojob:
+  name: gitclone
+
+ojob:
+  sequential: true
+  catch     : |
+    __pm.error = String(exception);
+    throw exception;
+
+jobs:
+  #-----------------
+  - name: Check args
+    exec: |
+      _$(args.source).$_("Please provide a source.");
+      global.source = global.ROJOB.WORK_DIR + "/" + args.source;
+      if ( !(io.getCanonicalPath(global.source).replace(/\\+/g, "/").startsWith(global.ROJOB.WORK_DIR + "/")) ||
+            (io.getCanonicalPath(global.source).replace(/\\+/g, "/").startsWith(global.ROJOB.WORK_DIR + "/.rojob")) ) 
+        throw "Invalid path: '" + global.source + "'.";
+
+      if (!io.fileExists(global.source) && io.fileInfo(global.source).isFile) throw "Folder not found: '" + global.source + "'";
+      
+  #-----------------
+  - name: ZIP folder
+    deps:
+      - Check args
+    exec: |
+      plugin("ZIP");
+
+      io.rm(global.source + ".zip");
+      var lst = listFilesRecursive(global.source);
+      var zip = new ZIP();
+      var ss = 0, rss = [];
+
+      lst.forEach((r) => {
+        if (r.isFile) {
+          //if (io.fileExists(global.source + ".zip")) zip.loadFile(global.source + ".zip");
+          //zip.putFile(r.canonicalPath.replace(global.source, ""), io.readFileBytes(r.canonicalPath));
+          var rs = io.readFileStream(r.canonicalPath);
+          ss += io.fileInfo(r.canonicalPath).size;
+          if (rss.length < 2048) {
+            rss.push({ s: rs, n: r.canonicalPath.replace(global.source, "") });
+          } else {
+            rss.push({ s: rs, n: r.canonicalPath.replace(global.source, "") });
+            zip.streamPutFileStream(global.source + ".zip", void 0, rss, true);
+            rss.forEach((rs) => {
+              rs.s.close();
+            })
+            rss = [];
+          }
+          print(ss);
+          //zip.generate2File(global.source + ".zip", { compressionLevel: 9 });
+        }
+      });
+      zip.streamPutFileStream(global.source + ".zip", void 0, rss, true);
+      rss.forEach((rs) => {
+        rs.s.close();
+      })
+      rss = [];
+      zip.close();
+
+      __pm.zipFile = (global.source + ".zip").replace(global.ROJOB.WORK_DIR, "");
+
+todo:
+  - Check args
+  - ZIP folder

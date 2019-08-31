@@ -1,0 +1,25 @@
+ojob:
+  sequential: true
+
+jobs:
+  #---------------
+  - name: Kill job
+    exec: |
+      var res = { result: 0 };
+
+      if (isDef(args.job)) {
+        try {
+          log("Killing job " + args.job);
+          io.rm(global.ROJOB.WORK_DIR + "/.rojob/" + args.job);
+          res.result = 1;
+        } catch(e) {
+          res.error = "Can't stop job id " + args.job;
+        }
+      } else {
+        res.error = "Please provide a job id.";
+      }
+
+      __pm = res;
+
+todo:
+  - name: Kill job

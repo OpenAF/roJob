@@ -1,0 +1,31 @@
+ojob:
+  sequential: true
+
+jobs:
+  #-----------------
+  - name: Get memory
+    exec: |
+      var vals = {
+        m: java.lang.Runtime.getRuntime().maxMemory(),
+        t: java.lang.Runtime.getRuntime().totalMemory(),
+        f: java.lang.Runtime.getRuntime().freeMemory()
+      }
+      vals.u = vals.t - vals.f;
+
+      if (isDef(args.format) && args.format == "true") {
+        ow.loadFormat();
+        __pm.max = ow.format.toBytesAbbreviation(vals.m);
+        __pm.total = ow.format.toBytesAbbreviation(vals.t);        
+        __pm.used = ow.format.toBytesAbbreviation(vals.u);
+        __pm.free = ow.format.toBytesAbbreviation(vals.f);
+      } else {
+        __pm.max = vals.m;
+        __pm.total = vals.t;
+        __pm.used = vals.u;
+        __pm.free = vals.f;
+      }
+      
+      delete __pm.format;
+
+todo:
+  - Get memory

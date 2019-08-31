@@ -1,0 +1,11 @@
+ojob:
+  sequential: true
+
+jobs:
+  #-----------
+  - name: Echo
+    exec: |
+      sprint(args);
+
+todo:
+  - Echo

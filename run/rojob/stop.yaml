@@ -1,0 +1,11 @@
+ojob:
+  sequential: true
+
+jobs:
+  #-----------
+  - name: Stop
+    exec: |
+      io.rm(global.ROJOB.WORK_DIR + "/.rojob/roJob_" + global.ROJOB.HOST + "_" + global.ROJOB.PORT + ".pid");
+
+todo:
+  - Stop

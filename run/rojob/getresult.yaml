@@ -1,0 +1,44 @@
+ojob:
+  sequential: true
+
+jobs:
+  #----------------------
+  - name: Check arguments
+    exec: |
+      _$(args.uuid).$_("Please provide a job UUID.");
+
+  #------------------------------------
+  - name: Check if job is still running
+    exec: |
+      args.stillRunning = args.ok && io.fileExists(global.ROJOB.WORK_DIR + "/.rojob/" + args.uuid + ".rojob");
+
+  #-----------------------------------
+  - name: Check if result is available
+    exec: |
+      args.resultAvailable = args.ok && io.fileExists(global.ROJOB.WORK_DIR + "/.rojob/" + args.uuid + ".result");
+
+  #---------------------------
+  - name: Get result if exists
+    deps:
+      - Check arguments
+    from:
+      - Check if job is still running
+      - Check if result is available
+    exec: |
+      var getResult = true;
+      if (isDef(args.stillRunning)) {
+        getResult = false;
+        __pm.__error = "Job " + args.uuid + " is still running.";
+      }
+      if (isDef(args.resultAvailable)) {
+        getResult = false;
+        __pm.__error = "Job " + args.uuid + " result is not available.";
+      }
+
+      if (getResult) {
+        __pm = io.readFile(global.ROJOB.WORK_DIR + "/.rojob/" + args.uuid + ".result");
+      }
+
+todo:
+  - Check arguments
+  - Get result if exists

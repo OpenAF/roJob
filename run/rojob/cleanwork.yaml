@@ -1,0 +1,45 @@
+ojob:
+  sequential: true
+  catch     : |
+    __pm.error = String(exception);
+    throw exception;
+
+todo:
+  - Clean work
+
+jobs:
+  #------------------
+  - name: Clean work
+    exec: |
+      args.path = _$(args.path).default("");
+      var plst = global.ROJOB.WORK_DIR + "/" + args.path;
+
+      if (!io.getCanonicalPath(plst).replace(/\\+/g, "/").startsWith(global.ROJOB.WORK_DIR) ||
+          io.getCanonicalPath(plst).replace(/\\+/g, "/").startsWith(global.ROJOB.WORK_DIR + "/.rojob")) 
+            throw "Invalid path: '" + plst;
+
+      if (!io.fileExists(plst)) throw "File/folder not found: '" + plst + "'";
+
+      log("Cleaning " + plst);
+
+      var c = 0;
+      if (io.fileInfo(plst).isFile) {
+        io.rm(plst);
+        c++;
+      } else {
+        var lst = io.listFiles(plst).files;
+        lst = $from(lst)
+              .notStarts("filepath", global.ROJOB.WORK_DIR + "/.rojob")
+              .select((r) => {
+                io.rm(r.canonicalPath);
+                c++;
+              });
+
+        if (plst != (global.ROJOB.WORK_DIR + "/.rojob") && plst != global.ROJOB.WORK_DIR + "/") {
+          io.rm(plst);
+          c++;
+        }
+      }
+
+      __pm.deleted = c;
+     

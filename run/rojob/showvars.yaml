@@ -1,0 +1,18 @@
+ojob:
+  sequential: true
+
+jobs:
+  #----------------------
+  - name: Show roJob Vars
+    exec: |
+      var tmp = clone(global.ROJOB);
+      delete tmp.cluster;
+      delete tmp.client;
+      __pm.rojob = tmp;
+      __pm.openaf = {
+        version: getVersion(),
+        opacks: Object.keys(getOPackPaths())
+      }
+
+todo:
+  - Show roJob Vars

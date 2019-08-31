@@ -1,0 +1,61 @@
+# vvv CHANGE vvv THE URL AND APIKEY FOR YOUR CASE
+URL    = "http://127.0.0.1:8787"
+APIKEY = "..."
+# ^^^ CHANGE ^^^
+
+
+# ---------------------------
+
+import sys, os, base64, datetime, time, hashlib, hmac, json, binascii, re, math, urllib, http.client
+
+# Sign with hmacSHA256
+def sign(key, msg):
+    return hmac.new(key, bytearray(msg,encoding='utf8'), hashlib.sha256).digest()
+
+# Sign with hmacSHA256 but returning in hex
+def signx(key, msg):
+    return hmac.new(key, bytearray(msg,encoding='utf8'), hashlib.sha256).hexdigest()
+
+# Sign data with a given aURI for the auth field
+def signAuth(aURI, data):
+    dateStamp = str(int(math.floor(time.time() / (60*2))))
+    #print(dateStamp)
+    kDateStamp = sign(bytes(("roJob" + APIKEY),encoding='utf8'), dateStamp)
+    #print("roJob" + APIKEY)
+    kURI = sign(kDateStamp, aURI)
+    #print(bytearray(aURI,encoding='utf8'))
+    kData = sign(kURI, hashlib.sha256(bytes(re.sub(r'[\n \t\r]+$', '', data),encoding='utf8')).hexdigest())
+    #print(re.sub(r'\n+$', '', data))
+    #print(bytearray(hashlib.sha256(re.sub(r'\n+$', '', data)).hexdigest(),encoding='utf8'))
+    #print(binascii.hexlify(kData))
+    return binascii.hexlify(kData)
+
+# Check the arguments
+# -------------------
+c = 0
+restParams = { }
+
+for arg in sys.argv:
+    if (c > 1):
+        tmpArgs = arg.split("=")
+        restParams[tmpArgs[0]] = tmpArgs[1]
+    c += 1
+
+# Get the ojob file
+# -----------------
+with open(sys.argv[1], 'r') as file:
+    fdata = file.read()
+
+# Prepare the parameters and request header
+# -----------------------------------------
+restParams = urllib.parse.urlencode(restParams)
+PARAMS = { "auth": signAuth("/ojob?" + restParams, fdata) }
+
+# Make the call
+# -------------
+conn = http.client.HTTPConnection(re.sub(r'^[^/]+//', "", URL))
+conn.request('POST', "/ojob?" + restParams, fdata, PARAMS)
+
+# Print the result
+# ----------------
+print((conn.getresponse().read()).decode('utf8'))

@@ -1,0 +1,19 @@
+ojob:
+  sequential: true
+
+todo:
+  - Add node
+
+jobs:
+  - name: Add node
+    exec: |
+      try {
+        _$(args.host).$_("Please provide a host.");
+        _$(args.port).$_("Please provide a port.");
+
+        log("Trying to add node " + args.host + ":" + args.port + "...");
+        global.ROJOB.cluster.verify({ host: String(args.host), port: Number(args.port) });
+        __pm.nodes = $path($ch("__cluster::" + global.ROJOB.CNAME).getAll(), "[].{ host: h, port: p }");
+      } catch(e) {
+        __pm.error = String(e);
+      }
