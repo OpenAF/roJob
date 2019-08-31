@@ -1,0 +1,13 @@
+ojob:
+  sequential: true
+
+jobs:
+  #---------------
+  - name: Get Time
+    exec: |
+      ow.loadFormat();
+      __pm.actualTime  = ow.format.getActualTime(true);
+      __pm.serviceTime = new Date();
+
+todo:
+  - Get Time

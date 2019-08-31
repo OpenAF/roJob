@@ -1,0 +1,13 @@
+ojob:
+  sequential: true
+
+jobs:
+  #------------
+  - name: Sleep
+    exec: |
+      args.ms = _$(args.ms).default(1000);
+      log("Sleeping " + args.ms + "ms...");
+      sleep(Number(args.ms));
+
+todo:
+  - Sleep

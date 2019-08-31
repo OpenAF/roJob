@@ -1,0 +1,12 @@
+ojob:
+  sequential: true
+
+jobs:
+  #--------------------
+  - name: Get Public IP
+    exec: |
+      ow.loadFormat();
+      __pm = ow.format.getPublicIP();
+
+todo:
+  - Get Public IP

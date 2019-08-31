@@ -1,0 +1,13 @@
+ojob:
+  opacks:
+    - APIs
+
+jobs:
+  #----------------------------
+  - name: Get Chuck Norris Joke
+    exec: |
+      loadLib("apis.js");
+      __pm.joke = apis.ChuckNorrisJokes.get();
+
+todo:
+  - Get Chuck Norris Joke

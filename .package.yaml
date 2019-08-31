@@ -31,6 +31,14 @@ files:
   - README.md
   - docker-compose.yaml.sample
   - roJobService.js
+  - examples/echo.yaml
+  - examples/getChuckNorrisJoke.yaml
+  - examples/getPublicIP.yaml
+  - examples/getLogs.yaml
+  - examples/sleep.yaml
+  - examples/tellTimeDaemon.yaml
+  - examples/copyOpenAFRepos.yaml
+  - examples/getTime.yaml
   - rojob.py.sample2
   - rojob.py.sample3
   - run/in/zipfolder.yaml
@@ -59,6 +67,14 @@ filesHash:
   README.md: 7af060189ec1a74c6c564f45c7b14533852e1658
   docker-compose.yaml.sample: 2259a1f8edbee5ad099bb40f9bfbca8c8334ab23
   roJobService.js: 636c572d4b851f8244a5245e32b81f901976d6ce
+  examples/echo.yaml: ac27c8dfc906ece0bb07106ef6a08617cbc9f149
+  examples/getChuckNorrisJoke.yaml: 4a98b49da3afcfed88ed9566256270b0b7b12679
+  examples/getPublicIP.yaml: ffb8935f6cd20f437851cbd7b3edb99b81a1419f
+  examples/getLogs.yaml: 524e4e5c39004d3b396b075283d73444af040995
+  examples/sleep.yaml: 7672cad4e4c2aaab3a2f427d16d4abd97e42d036
+  examples/tellTimeDaemon.yaml: c0c5992db6d45334bc1bba407fd194604cd3ed6d
+  examples/copyOpenAFRepos.yaml: c0de8f5212a1d20da9cb9a3fc76b816a8425d554
+  examples/getTime.yaml: 9aa8e2d7891a040570ef3f1a3e46886c6b993cd7
   rojob.py.sample2: 906d44671a8c3f340c985b502283c674efe30a7f
   rojob.py.sample3: 26814bf843c3a2dd5e3a3f623c2254a66045c4c5
   run/in/zipfolder.yaml: 7dd205e3967c952b4306fbbe8d837ca9421c77de

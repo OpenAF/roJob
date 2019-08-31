@@ -1,0 +1,17 @@
+rojob:
+  async: true
+
+ojob:
+  daemon: true
+
+jobs:
+  #------------------------
+  - name    : Tell the time
+    type    : periodic
+    typeArgs:
+       timeInterval: 5000
+    exec    : >-
+       log(getVersion() + " (" + getDistribution() +") | The current time is " + new Date());
+
+todo:
+  - Tell the time

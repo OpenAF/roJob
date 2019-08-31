@@ -1,0 +1,11 @@
+ojob:
+  sequential: true
+
+jobs:
+  #---------------
+  - name: Get Logs
+    exec: |
+      __pm.logs = $from($ch("__log").getAll()).select((r) => { return r.d + " | " + r.t + " | " + r.m; });
+
+todo:
+  - Get Logs

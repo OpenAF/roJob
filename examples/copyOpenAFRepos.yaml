@@ -1,0 +1,83 @@
+init:
+  output: "openafReposCopy"
+  repos : &REPOS
+    - name: OpenAF
+      url : https://github.com/OpenAF/openaf.git
+    - name: OpenAF.wiki
+      url : https://github.com/OpenAF/openaf.wiki.git
+    - name: nAttrMon
+      url : https://github.com/OpenAF/nAttrMon.git
+    - name: nAttrMon.wiki
+      url : https://github.com/OpenAF/nAttrMon.wiki.git
+    - name: OpenAF-oPacks
+      url : https://github.com/OpenAF/openaf-opacks.git
+    - name: OpenAF-oPacks.wiki
+      url : https://github.com/OpenAF/openaf-opacks.wiki.git
+    - name: oJob-common
+      url : https://github.com/OpenAF/oJob-common.git
+    - name: oJob-common.wiki
+      url : https://github.com/OpenAF/oJob-common.wiki.git
+    - name: OpenAF-dockers
+      url : https://github.com/OpenAF/openaf-dockers.git
+    #- name: OpenAF-dockers.wiki
+    #  url : https://github.com/OpenAF/openaf-dockers.wiki.git
+    - name: OpenAF-templates
+      url : https://github.com/OpenAF/openaf-templates.git
+    #- name: OpenAF-templates.wiki
+    #  url : https://github.com/OpenAF/openaf-templates.wiki.git
+    - name: OpenAF-roJob
+      url : https://github.com/OpenAF/roJob.git
+    #- name: OpenAF-roJob.wiki
+    #  url : https://github.com/OpenAF/openaf-roJob.wiki.git
+
+rojob:
+  async: true
+
+todo:
+  - name: Clone a Repo
+    args: *REPOS
+
+jobs:
+  #-------------------
+  - name: Clone a Repo
+    from: 
+      - Set variables
+    to  :
+      - ZIP everything
+    exec: |
+      __pm.clone = "nok";
+      plugin("GIT");
+      var git = new GIT();
+      log("Cloning " + args.url + "...");
+      git.clone(args.url, args.output, true);
+      log("Done " + args.url);
+      __pm.clone = "ok";
+
+  #--------------------
+  - name: Set variables
+    exec: |
+      args.output = global.ROJOB.WORK_DIR + "/" + args.init.output + "/" + args.name;
+      io.rm(args.output);
+      io.mkdir(args.output);
+
+  #---------------------
+  - name: ZIP everything
+    exec: |
+      plugin("ZIP");
+      var zip = new ZIP();
+
+      var lst = listFilesRecursive(args.output);
+      io.rm(args.output + ".zip");
+      lst.forEach((f) => {
+        if (f.isFile) {
+          /*zip.streamPutFileStream(
+            args.output + ".zip", 
+            f.filepath.replace(args.output, ""),
+            io.readFileStream(f.filepath)
+          );*/
+          zip.putFile(f.filepath.replace(args.output, ""), io.readFileBytes(f.filepath));
+        }
+      });
+      zip.generate2File(args.output + ".zip", { compressionLevel: 9 }, true);
+      zip.close();
+      io.rm(args.output);
