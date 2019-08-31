@@ -21,7 +21,7 @@ jobs:
   #----------------------------
   - name: Detect Python version
     exec: |
-      var res = $sh("python --version").get();
+      var res = $sh("python --version").get(0);
       res = res.stdout + res.stderr;
       global.python = (res.match(/ 2\./) ? 2 : 3);
       log("Python version: " + global.python);

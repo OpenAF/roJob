@@ -58,7 +58,7 @@ files:
   - run/rojob/addnode.yaml
   - run/rojob/listwork.yaml
 filesHash:
-  genScripts.yaml: 508394729fea1d93fc894ed8a24f8dfb6858814f
+  genScripts.yaml: 94c08a9df8fb68d81db96895b96b2e26fd9d3f4b
   LICENSE: 7df059597099bb7dcf25d2a9aedfaf4465f72d8d
   Dockerfile: c85832ece2910ffee3c0ea3139a7be35f7830344
   rojob.js: cd285ea9323409f35dcd6c3d4b3388026ebc6b56
