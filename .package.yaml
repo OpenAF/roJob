@@ -11,7 +11,7 @@ bugs:
   url: 'https://github.com/OpenAF/roJob/issues'
 repository:
   type: http
-  url: 'https://github.com/OpenAF/roJob'
+  url: 'https://openaf.io/opacks/roJob.opack'
 description: oJobs as a service
 name: roJob
 main: ''
