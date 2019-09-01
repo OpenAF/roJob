@@ -27,6 +27,7 @@ In all cases there are common arguments or environment variables to configure:
 | CNAME | rojob | The rojob cluster name. |
 | CDISC | (first file in work/.rojob/*.pid) | A string with host:port to contact when discovery other cluster nodes. |
 | RUNONLY | false | Enforces that only jobs under the run folder can be executed. |
+| SHOWERRORS | true | If there is any error during jobs execution it will be appended to the result in the entry __errors |
 
 ## Using roJob
 

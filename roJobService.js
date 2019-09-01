@@ -32,6 +32,7 @@ args.CNAME          = _$(args.CNAME).default("rojob");
 args.INIT           = _$(args.INIT).default("true");
 args.INITCHECK      = _$(args.INITCHECK).default(void 0);
 args.RUNONLY        = _$(args.RUNONLY).default("false");
+args.SHOWERRORS     = _$(args.SHOWERRORS).default("true");
 
 // Ensure the work exists
 io.mkdir(args.WORK);
@@ -277,8 +278,20 @@ function fnReply(idxs, data, req, origData) {
 			} else {
 				$doWait(pro);
 				res = clone(__pm);
+				if (args.SHOWERRORS == "true") {
+					var errs = $from($ch("oJob::log").getAll()).equals("error", true).select((r) => { return { name: r.name, error: $path(r.log, "[].error") } });
+					if (errs.length > 0) {
+						res.__errors = errs;
+					}
+				}
 			}
 		}, 50, 1);
+
+		var cleanup = () => {
+			$ch("oJob::log").unsetAll(["ojobId", "name"], $from($ch("oJob::log").getAll()).starts("ojobId", ow.oJob.getID()).select());
+			$ch("oJob::jobs").unsetAll(["name"], $ch("oJob::jobs").getAll());
+			$ch("oJob::todo").unsetAll(["ojobId", "todoId"], $from($ch("oJob::jobs").getAll()).starts("ojobId", ow.oJob.getID()).select());
+		};
 
 		if (!lockRes && isUnDef(data.rojob.__redirected)) {
 			var torigData = (isObject(data) ? clone(data) : data);
@@ -320,8 +333,10 @@ function fnReply(idxs, data, req, origData) {
 					stores = { result: 0 };
 				}
 			}
+			$do(cleanup);
 			return stores;
 		} else {
+			$do(cleanup);
 			return res;
 		}
 	} catch(ee) {

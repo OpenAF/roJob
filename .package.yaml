@@ -64,9 +64,9 @@ filesHash:
   rojob.js: cd285ea9323409f35dcd6c3d4b3388026ebc6b56
   watchdog.yaml.sample: d8c5cb01be16a3fa6205fabda26eb5db9ed5fa64
   .odoc.db: cb2f43ca95efcca480d644be0207e0393eb7a671
-  README.md: 7af060189ec1a74c6c564f45c7b14533852e1658
+  README.md: d22f5ccb24f6ecd19bc6c88f3125b3f64fdd2638
   docker-compose.yaml.sample: 2259a1f8edbee5ad099bb40f9bfbca8c8334ab23
-  roJobService.js: 636c572d4b851f8244a5245e32b81f901976d6ce
+  roJobService.js: 256f5902ac69b115c32601fd94b90ff9ff8b0798
   examples/echo.yaml: ac27c8dfc906ece0bb07106ef6a08617cbc9f149
   examples/getChuckNorrisJoke.yaml: 4a98b49da3afcfed88ed9566256270b0b7b12679
   examples/getPublicIP.yaml: ffb8935f6cd20f437851cbd7b3edb99b81a1419f
