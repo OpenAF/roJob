@@ -14,14 +14,15 @@ repository:
   url: 'https://openaf.io/opacks/roJob.opack'
 description: oJobs as a service
 name: roJob
-main: ''
+main: main.js
 mainJob: ''
 license: 'https://raw.githubusercontent.com/OpenAF/roJob/master/LICENSE'
 version: '20190829'
 dependencies:
-  openaf: '>=20190801'
+  openaf: '>=20190901'
 files:
   - genScripts.yaml
+  - watchdog.yaml
   - LICENSE
   - Dockerfile
   - rojob.js
@@ -29,6 +30,7 @@ files:
   - .package.yaml
   - .odoc.db
   - README.md
+  - main.js
   - docker-compose.yaml.sample
   - roJobService.js
   - examples/echo.yaml
@@ -58,13 +60,15 @@ files:
   - run/rojob/addnode.yaml
   - run/rojob/listwork.yaml
 filesHash:
-  genScripts.yaml: 94c08a9df8fb68d81db96895b96b2e26fd9d3f4b
+  genScripts.yaml: b1687930367a3d7eadc7f151afb8dfcbcfc05291
+  watchdog.yaml: 5cb4afcc9829eb7b77ed4b7533bcf3e413cabd25
   LICENSE: 7df059597099bb7dcf25d2a9aedfaf4465f72d8d
   Dockerfile: 9fc113787e2d4894ce71ea0dd583b87b5db00b7d
-  rojob.js: 92fdf3d100ba5de8ccc118e2f4d377d0208e2243
-  watchdog.yaml.sample: d8c5cb01be16a3fa6205fabda26eb5db9ed5fa64
+  rojob.js: 27c7cf4c06d0814f263bedc4933de60bca29926c
+  watchdog.yaml.sample: b5e1e77b8cd5b58fcbee9baa76aa57308d8ec05a
   .odoc.db: cb2f43ca95efcca480d644be0207e0393eb7a671
-  README.md: d22f5ccb24f6ecd19bc6c88f3125b3f64fdd2638
+  README.md: 08d24574fc32ade16d4a3a6e8ce85ac0d2b763a3
+  main.js: 61c6f157d4f364f971fd34543e95182a8e7349c2
   docker-compose.yaml.sample: 9dbc920e75f12a5787a820baf19976d1eb5f770a
   roJobService.js: 256f5902ac69b115c32601fd94b90ff9ff8b0798
   examples/echo.yaml: ac27c8dfc906ece0bb07106ef6a08617cbc9f149
@@ -75,8 +79,8 @@ filesHash:
   examples/tellTimeDaemon.yaml: c0c5992db6d45334bc1bba407fd194604cd3ed6d
   examples/copyOpenAFRepos.yaml: c0de8f5212a1d20da9cb9a3fc76b816a8425d554
   examples/getTime.yaml: 9aa8e2d7891a040570ef3f1a3e46886c6b993cd7
-  rojob.py.sample2: 906d44671a8c3f340c985b502283c674efe30a7f
-  rojob.py.sample3: 26814bf843c3a2dd5e3a3f623c2254a66045c4c5
+  rojob.py.sample2: fea15f1e17e566976f3943c8eba1c0d049a8b419
+  rojob.py.sample3: 6fed536134f68436378f97fec00ef8bdb99a9844
   run/in/zipfolder.yaml: 7dd205e3967c952b4306fbbe8d837ca9421c77de
   run/in/gitclone.yaml: 2a9ffbb5371da823ca3954777bb44657588e03b8
   run/rojob/echo.yaml: 66102c6963586aa8c98d2458c6b527ca6f1d86ae
@@ -86,7 +90,7 @@ filesHash:
   run/rojob/cleanresult.yaml: a4f847a133b1c03602bc16c22d29d3b08d2840bc
   run/rojob/showvars.yaml: f7b331ff291c12417d29cb36c2d1a63bec300d01
   run/rojob/listnodes.yaml: e2dd9f5eb5e96a64e8c921a0ec24614428271b27
-  run/rojob/stopall.yaml: 41dce46e837a51d5f313ca4c12d5d04c763eb885
+  run/rojob/stopall.yaml: 007abed0cc665c798ddf4565f1e8ce9a3f4041da
   run/rojob/clearinitjobs.yaml: 47666825ef08bffdae0c06b545423c9fb1638d72
   run/rojob/getresult.yaml: 6f57276c603a96c82ae098ef988f51b6cc3a2ab7
   run/rojob/stop.yaml: f69a3ed28eda663895692daa9c647b43036c863f

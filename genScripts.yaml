@@ -1,6 +1,6 @@
 ojob:
   async: true
-  logToConsole: false
+  logToConsole: true
 
 todo:
   - Detect OS
@@ -29,10 +29,13 @@ jobs:
   #-----------------------
   - name: Generate API key
     exec: |
-      var key = sha512(genUUID());
+      if (isUnDef(args.APIKEY) && io.fileExists(getOPackPath("roJob") + "/.apikey")) 
+        args.APIKEY = io.readFileString(getOPackPath("roJob") + "/.apikey");
+      var key = ( isDef(args.APIKEY) ? args.APIKEY : sha512(genUUID()) );
+      key = key.trim().replace(/\n/g, "");
       io.writeFileString(getOPackPath("roJob") + "/.apikey", key);
       global.key = key;
-      log("Generated new key: " + key);
+      log("APIKEY: " + key);
 
   #-----------------------------
   - name: Generate Python script 
@@ -61,12 +64,13 @@ jobs:
       if (global.os == "win") {
          script += "@echo off\n\n";
          script += "python " + getOPackPath("roJob") + "\\rojob.py %*\n";
-         io.writeFileString("rojob.bat", script);
+         io.writeFileString(getOPackPath("roJob") + "\\rojob.bat", script);
          log("Generated rojob.bat.");
       } else {
          script += "#!/bin/sh\n\n";
          script += "python " + getOPackPath("roJob") + "/rojob.py \"$@\"\n";
-         io.writeFileString("rojob.sh", script);
+         io.writeFileString(getOPackPath("roJob") + "/rojob.sh", script);
+         sh("chmod u+x " + getOPackPath("roJob") + "/rojob.sh");
          log("Generated rojob.sh.");
       }
 
@@ -75,12 +79,16 @@ jobs:
     deps:
       - Detect OS
     exec: |
+      args.CDISC = _$(args.CDISC).default("127.0.0.1:8787");
+      args.PORTS = _$(args.PORTS).default("8787,8788");
+      args.PORTS = args.PORTS.split(/,/);
+
       io.writeFileString("watchdog.yaml", templify(io.readFileString(getOPackPath("roJob") + "/watchdog.yaml.sample"), { 
          win: (global.os == "win"), 
          opackHome: getOPackPath("roJob").replace(/\\/g, "/"),
          openafHome: getOpenAFPath().replace(/\\/g, "/"),
-         //ports: [ 8787, 8788, 8789 ]
-         ports: [ 8787 ]
+         cdisc: args.CDISC,
+         ports: args.PORTS
       }));
       log("Generated watchdog.yaml.");
 

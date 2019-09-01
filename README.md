@@ -70,6 +70,22 @@ There are specific runtime ojobs included with everynode under the folder "run/r
 | stop.yaml | | Kills the current rojob node. |
 | stopall.yaml | | TRies to kill all rojob nodes. | 
 
+## Deploying standalone
+
+To deploy it directly under OpenAF just follow the steps:
+
+````bash
+$ opack install rojob
+$ opack exec rojob setup
+$ opack exec rojob start
+````
+
+To stop it:
+
+````bash
+$ opack exec rojob stop
+````
+
 ## Deploying in Docker Swarm
 
 Follow the steps:
@@ -108,7 +124,7 @@ If you want to map the work folder in the host operating system just replace ste
 docker service create --replicas 3 --name rojob --network rojob --publish published=8787,target=8787 -e PORT=8787 -e WORK=/work -e APIKEY=xxxxxx --mount src=/roJob/work,dst=/work,type=bind rojob
 ````
 
-## Deploying a work file browser
+## Deploying a docker work file browser
 
 You can directly use the openaf-fbrowser container:
 

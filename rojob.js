@@ -9,8 +9,23 @@ var roJob = function(aURL, aAPIKey) {
 	if (isArray(aURL)) {
 		this.urls = aURL;
 	} else {
-		aURL = _$(aURL).isString().default("http://127.0.0.1:8787");
-		this.urls = [ aURL ];
+		if (isString(aURL)) {
+			this.urls = [ aURL ];
+		} else {
+			var nodes;
+			if (io.fileExists(getOPackPath("roJob") + "/work/.rojob")) {
+				var nodes = $from(io.listFilenames(getOPackPath("roJob") + "/work/.rojob"))
+							.ends(".pid")
+							.starts(getOPackPath("roJob") + "/work/.rojob/roJob_")
+							.select((r) => { var a = r.split("_"); return "http://" + a[1] + ":" + a[2].replace(".pid", ""); });
+				if (nodes.length > 0) {
+					this.urls = nodes;
+				}
+			}
+			if (isUnDef(this.urls)) {
+				this.urls = [ "http://127.0.0.1:8787" ];
+			}
+		}
 	}
    
     this.APIKEY = aAPIKey;

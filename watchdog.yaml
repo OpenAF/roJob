@@ -1,0 +1,88 @@
+# Template          : Quick watchdog to ensure processes are running
+# Author            : Nuno Aguiar
+# How to run        : ojob watchdog.yaml (in crontab every x minutes)
+# oPack dependencies: latest ojob-common;
+
+include:
+  - oJobWatchDog.yaml
+
+ojob:
+  logToFile   :
+    logFolder            : "/Applications/OpenAF/roJob/watchdog.logs"
+    HKhowLongAgoInMinutes: 10080                  # keep logs for 7 days
+    setLogOff            : true
+  logToConsole: false
+  logJobs     : false
+  logArgs     : false
+  unique      :
+    pidFile     : "/Applications/OpenAF/roJob/watchdog.pid"
+    killPrevious: true
+  checkStall  :
+    everySeconds    : 1
+    killAfterSeconds: 60
+  opacks      :
+    - oJob-common
+
+todo:
+  - Watchdog for roJob 8787
+  - Watchdog for roJob 8788
+
+jobs:
+  #-------------------------------
+  - name: Watchdog for roJob 8787
+    to  :
+      - oJob WatchDog
+    args:
+      nameOfDog   : Process roJob dog 8787
+      quiet       : false
+      #jobToNotify : Barking to someone
+      cmdToStart  : "nohup /Applications/OpenAF/openaf -f /Applications/OpenAF/roJob/roJobService.js -e \"LOG=/Applications/OpenAF/roJob/logs CDISC=127.0.0.1:8787 PORT=8787\" 2>&1 > /Applications/OpenAF/roJob/roJob_.out &"
+      workDirStart: "/Applications/OpenAF/roJob"
+
+      checks      :
+        log   :
+          folder  : "/Applications/OpenAF/roJob/logs"
+          fileRE  : "log-8787-.+\\.log"
+          histFile: "/Applications/OpenAF/roJob/.watchdog.roJob.history.8787"  # where to keep track of what was previously saw on the log file
+          stringRE:
+            - java\.lang\.OutOfMemory
+
+        custom:
+          exec: |
+            try {
+              ow.loadFormat();
+              return ow.format.testPort("127.0.0.1", 8787);
+            } catch(e) {
+              logErr("Error: " + String(e));
+              return false;
+            }
+
+  #-------------------------------
+  - name: Watchdog for roJob 8788
+    to  :
+      - oJob WatchDog
+    args:
+      nameOfDog   : Process roJob dog 8788
+      quiet       : false
+      #jobToNotify : Barking to someone
+      cmdToStart  : "nohup /Applications/OpenAF/openaf -f /Applications/OpenAF/roJob/roJobService.js -e \"LOG=/Applications/OpenAF/roJob/logs CDISC=127.0.0.1:8787 PORT=8788\" 2>&1 > /Applications/OpenAF/roJob/roJob_.out &"
+      workDirStart: "/Applications/OpenAF/roJob"
+
+      checks      :
+        log   :
+          folder  : "/Applications/OpenAF/roJob/logs"
+          fileRE  : "log-8788-.+\\.log"
+          histFile: "/Applications/OpenAF/roJob/.watchdog.roJob.history.8788"  # where to keep track of what was previously saw on the log file
+          stringRE:
+            - java\.lang\.OutOfMemory
+
+        custom:
+          exec: |
+            try {
+              ow.loadFormat();
+              return ow.format.testPort("127.0.0.1", 8788);
+            } catch(e) {
+              logErr("Error: " + String(e));
+              return false;
+            }
+

@@ -2,24 +2,37 @@ ojob:
   sequential: true
 
 jobs:
-  #---------------
-  - name: Stop all
+  #-------------------------
+  - name: Get all nodes list
     exec: |
       try {
-        __pm.nodes = io.readFile(global.ROJOB.MASTERFILE).rojobs;
+        __pm.nodes = $path($ch("__cluster::" + global.ROJOB.CNAME).getAll(), "[].{ host: h, port: p }"); 
+        logWarn(stringify(__pm));
         __pm.stop = {};
       } catch(e) {
         __pm.error = String(e);
+        logErr(String(e));
       }
 
   #-----------
   - name: Stop
     exec: |
-      log("Stopping " + args.host + ":" + args.port);
-      $rest().post("http://" + args.host + ":" + args.port + "/run", "rojob/stop.yaml");
-      exit(0);
+      if (!(args.host == global.ROJOB.HOST && args.port == global.ROJOB.PORT)) {
+        log("Stopping " + args.host + ":" + args.port);
+        if (io.fileExists(global.ROJOB.WORK_DIR + "/.rojob/roJob_" + args.host + "_" + args.port + ".pid")) {
+          io.rm(global.ROJOB.WORK_DIR + "/.rojob/roJob_" + args.host + "_" + args.port + ".pid");
+        } else {
+          $rest().post("http://" + args.host + ":" + args.port + "/run", "rojob/stop.yaml");
+        }
+      }
+  
+  #------------------
+  - name: Stop myself
+    exec: |
+      io.rm(global.ROJOB.WORK_DIR + "/.rojob/roJob_" + global.ROJOB.HOST + "_" + global.ROJOB.PORT + ".pid");
 
 todo:
-  - name: Stop all
+  - name: Get all nodes list
   - name: Stop
     args: __pm.nodes
+  - name: Stop myself
