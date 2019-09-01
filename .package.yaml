@@ -23,7 +23,6 @@ dependencies:
   oJob-common: '>=20190812'
 files:
   - genScripts.yaml
-  - watchdog.yaml
   - LICENSE
   - Dockerfile
   - rojob.js
@@ -62,7 +61,6 @@ files:
   - run/rojob/listwork.yaml
 filesHash:
   genScripts.yaml: b1687930367a3d7eadc7f151afb8dfcbcfc05291
-  watchdog.yaml: 5cb4afcc9829eb7b77ed4b7533bcf3e413cabd25
   LICENSE: 7df059597099bb7dcf25d2a9aedfaf4465f72d8d
   Dockerfile: 9fc113787e2d4894ce71ea0dd583b87b5db00b7d
   rojob.js: 27c7cf4c06d0814f263bedc4933de60bca29926c
