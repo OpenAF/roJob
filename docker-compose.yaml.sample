@@ -3,7 +3,7 @@ version: '3.3'
 services:
   olb:
     restart    : always
-    image      : olb
+    build      : https://github.com/OpenAF/openaf-dockers.git#:openaf.io/oLB
     ports      :
       - "8787:8787"
     networks   :
@@ -18,7 +18,7 @@ services:
 
   rojob:
     restart       : always
-    image         : rojob
+    build         : https://github.com/OpenAF/roJob.git
     volumes       :
       - "/roJob/work:/work:rw"
     ports         :

@@ -16,7 +16,7 @@ var roJob = function(aURL, aAPIKey) {
     this.APIKEY = aAPIKey;
     if (isUnDef(this.APIKEY) && isDef(getOPackPath("roJob"))) {
 	   	if (io.fileExists(getOPackPath("roJob") + "/.apikey")) {
-			this.APIKEY = io.readFileString(getOPackPath("roJob") + "/.apikey");
+			this.APIKEY = io.readFileString(getOPackPath("roJob") + "/.apikey").replace(/\n/g, "");
 	   	}
    }
 };
