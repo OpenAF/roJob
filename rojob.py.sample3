@@ -59,4 +59,4 @@ conn.request('POST', "/ojob?" + restParams, fdata, PARAMS)
 # Print the result
 # ----------------
 # print((conn.getresponse().read()).decode('utf8'))
-print( json.dumps( (json.loads(conn.getresponse().read())).decode('utf8'), indent=4, separators=(', ',': ') ) )
+print( json.dumps( (json.loads(conn.getresponse().read().decode('utf8'))), indent=4, separators=(', ',': ') ) )

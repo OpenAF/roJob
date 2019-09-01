@@ -75,7 +75,7 @@ There are specific runtime ojobs included with everynode under the folder "run/r
 To deploy it directly under OpenAF just follow the steps:
 
 ````bash
-$ opack install rojob
+$ opack install rojob -deps
 $ opack exec rojob setup
 $ opack exec rojob start
 ````
