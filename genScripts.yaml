@@ -83,7 +83,7 @@ jobs:
       args.PORTS = _$(args.PORTS).default("8787,8788");
       args.PORTS = args.PORTS.split(/,/);
 
-      io.writeFileString("watchdog.yaml", templify(io.readFileString(getOPackPath("roJob") + "/watchdog.yaml.sample"), { 
+      io.writeFileString(getOPackPath("roJob") + "/watchdog.yaml", templify(io.readFileString(getOPackPath("roJob") + "/watchdog.yaml.sample"), { 
          win: (global.os == "win"), 
          opackHome: getOPackPath("roJob").replace(/\\/g, "/"),
          openafHome: getOpenAFPath().replace(/\\/g, "/"),
