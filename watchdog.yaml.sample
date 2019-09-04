@@ -39,9 +39,9 @@ jobs:
       quiet       : false
       #jobToNotify : Barking to someone
       {{#if ../win}}
-      cmdToStart  : "start /b {{../openafHome}}openaf.bat -f {{../opackHome}}/roJobService.js -e \"LOG={{../opackHome}}/logs CDISC={{../cdisc}} PORT={{this}}\" 2>&1 > {{../opackHome}}/roJob_{{port}}.out"
+      cmdToStart  : "start /b {{../openafHome}}openaf.bat -f {{../opackHome}}/roJobService.js -e \"LOG={{../opackHome}}/logs CDISC={{../cdisc}} PORT={{this}}\" 2>&1 > {{../opackHome}}/roJob_{{this}}.out"
       {{else}}
-      cmdToStart  : "nohup {{../openafHome}}openaf -f {{../opackHome}}/roJobService.js -e \"LOG={{../opackHome}}/logs CDISC={{../cdisc}} PORT={{this}}\" 2>&1 > {{../opackHome}}/roJob_{{port}}.out &"
+      cmdToStart  : "nohup {{../openafHome}}openaf -f {{../opackHome}}/roJobService.js -e \"LOG={{../opackHome}}/logs CDISC={{../cdisc}} PORT={{this}}\" 2>&1 > {{../opackHome}}/roJob_{{this}}.out &"
       {{/if}}
       workDirStart: "{{../opackHome}}"
 
