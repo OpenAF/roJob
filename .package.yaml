@@ -17,7 +17,7 @@ name: roJob
 main: main.js
 mainJob: ''
 license: 'https://raw.githubusercontent.com/OpenAF/roJob/master/LICENSE'
-version: '20190903'
+version: '20190904'
 dependencies:
   openaf: '>=20190901'
   oJob-common: '>=20190812'
@@ -74,7 +74,7 @@ filesHash:
   genScripts.yaml: 698a65c8a7f9accaaca6035cd659ce5d086d99ab
   LICENSE: 7df059597099bb7dcf25d2a9aedfaf4465f72d8d
   main.js: 61c6f157d4f364f971fd34543e95182a8e7349c2
-  README.md: 2635de27cf8dc1aea9d94e0fba99460b78d53ecf
+  README.md: efac97f80a18c5d8369bc13056a06fc1dfd7ef6a
   rojob.js: 27c7cf4c06d0814f263bedc4933de60bca29926c
   rojob.py.sample2: fea15f1e17e566976f3943c8eba1c0d049a8b419
   rojob.py.sample3: 01d151d05e098b0d4d2b1d864366245a9263dfa1

@@ -300,6 +300,23 @@ function fnReply(idxs, data, req, origData) {
 			var stores = cluster.sendToOthers(torigData, sendOthers);
 			
 			if (isUnDef(stores)) {
+				if (isDef(args.FALLBACKS)) {
+					var fs = args.FALLBACKS.split(/,/);
+					var ii = 0;
+					while(ii < fs.length && isUnDef(stores)) {
+						var friend = fs[ii].split(/:/);
+						try {
+							stores = sendOthers(torigData, {
+								host: friend[0],
+								port: friend[1]
+							});
+						} catch(e) { 
+							logErr("Couldn't use " + friend[0] + ":" + friend[1]);
+						}
+						ii++;
+					}
+				}
+
 				if (args.FORK == "true") {
 					var pport = findRandomOpenPort();
 					pexpr = pexpr.replace(/PORT=[^ ]+/, "");

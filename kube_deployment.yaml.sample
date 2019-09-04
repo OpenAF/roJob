@@ -1,0 +1,34 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: rojob
+  name: rojob
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      run: rojob
+  template:
+    metadata:
+      labels:
+        run: rojob
+    spec:
+      containers:
+      - args:
+        - "true"
+        env:
+        - name: APIKEY
+          value: xxxxxxx
+        - name: FALLBACKS
+          value: rojob:8787
+        - name: WORK
+          value: /work
+        - name: OPACKS
+          value: S3
+        image: openaf/rojob
+        name: rojob
+        ports:
+        - containerPort: 8787
+          protocol: TCP
+        resources: {}

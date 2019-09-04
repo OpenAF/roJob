@@ -28,6 +28,7 @@ In all cases there are common arguments or environment variables to configure:
 | CDISC | (first file in work/.rojob/*.pid) | A string with host:port to contact when discovery other cluster nodes. |
 | RUNONLY | false | Enforces that only jobs under the run folder can be executed. |
 | SHOWERRORS | true | If there is any error during jobs execution it will be appended to the result in the entry __errors |
+| FALLBACKS | | A comma delimited list of other roJobs "host:port" that despite not making part of the cluster requests can be redirect to. |
 
 ## Using roJob
 
@@ -122,6 +123,26 @@ If you want to map the work folder in the host operating system just replace ste
 
 ````bash
 docker service create --replicas 3 --name rojob --network rojob --publish published=8787,target=8787 -e PORT=8787 -e WORK=/work -e APIKEY=xxxxxx --mount src=/roJob/work,dst=/work,type=bind rojob
+````
+
+## Deploying in Kubernetes
+
+Create the deployment:
+
+````bash
+kubectl run rojob --image=openaf/rojob --port=8787 --env APIKEY=xxxxxx --env CDISC=rojob:8787 --replicas=3
+````
+
+Create the service:
+
+````bash
+kubectl expose deployment rojob --type=LoadBalancer --port=8787 --target-port=8787
+````
+
+To uninstall it just delete the deployment and corresponding service:
+````bash
+kubectl delete deployment/rojob
+kubectl delete service/rojob
 ````
 
 ## Deploying a docker work file browser
