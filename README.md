@@ -130,7 +130,7 @@ docker service create --replicas 3 --name rojob --network rojob --publish publis
 Create the deployment:
 
 ````bash
-kubectl run rojob --image=openaf/rojob --port=8787 --env APIKEY=xxxxxx --env CDISC=rojob:8787 --replicas=3
+kubectl run rojob --image=openaf/rojob --port=8787 --env APIKEY=xxxxxx --env FALLBACKS=rojob:8787 --replicas=3
 ````
 
 Create the service:

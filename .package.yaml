@@ -29,12 +29,12 @@ files:
   - examples/copyOpenAFRepos.yaml
   - examples/echo.yaml
   - examples/getChuckNorrisJoke.yaml
-  - examples/getLogs.yaml
   - examples/getPublicIP.yaml
   - examples/getTime.yaml
   - examples/sleep.yaml
   - examples/tellTimeDaemon.yaml
   - genScripts.yaml
+  - kube_deployment.yaml.sample
   - LICENSE
   - main.js
   - README.md
@@ -66,19 +66,19 @@ filesHash:
   examples/copyOpenAFRepos.yaml: c0de8f5212a1d20da9cb9a3fc76b816a8425d554
   examples/echo.yaml: ac27c8dfc906ece0bb07106ef6a08617cbc9f149
   examples/getChuckNorrisJoke.yaml: 4a98b49da3afcfed88ed9566256270b0b7b12679
-  examples/getLogs.yaml: 524e4e5c39004d3b396b075283d73444af040995
   examples/getPublicIP.yaml: ffb8935f6cd20f437851cbd7b3edb99b81a1419f
   examples/getTime.yaml: 9aa8e2d7891a040570ef3f1a3e46886c6b993cd7
   examples/sleep.yaml: 7672cad4e4c2aaab3a2f427d16d4abd97e42d036
   examples/tellTimeDaemon.yaml: c0c5992db6d45334bc1bba407fd194604cd3ed6d
   genScripts.yaml: 698a65c8a7f9accaaca6035cd659ce5d086d99ab
+  kube_deployment.yaml.sample: 9985f6dee40680010617882b37951c4f5477aa49
   LICENSE: 7df059597099bb7dcf25d2a9aedfaf4465f72d8d
   main.js: 61c6f157d4f364f971fd34543e95182a8e7349c2
-  README.md: efac97f80a18c5d8369bc13056a06fc1dfd7ef6a
+  README.md: 03ad01e098733f18d3120745f8b8874c532f8770
   rojob.js: 27c7cf4c06d0814f263bedc4933de60bca29926c
   rojob.py.sample2: fea15f1e17e566976f3943c8eba1c0d049a8b419
   rojob.py.sample3: 01d151d05e098b0d4d2b1d864366245a9263dfa1
-  roJobService.js: 256f5902ac69b115c32601fd94b90ff9ff8b0798
+  roJobService.js: 43e948f37a50f995a9fd4a86a057381e9bee51d4
   run/in/gitclone.yaml: 2a9ffbb5371da823ca3954777bb44657588e03b8
   run/in/zipfolder.yaml: 7dd205e3967c952b4306fbbe8d837ca9421c77de
   run/rojob/addnode.yaml: 36cc6d1a31e4c215af29c1f171cdd5664edb46cf
