@@ -79,13 +79,13 @@ roJob.prototype.execJob = function(aoJob, aObj) {
 
 roJob.prototype.exec = function(aFile, aObj) {
 	var aURI = "/ojob?" + $rest().query(aObj);
-    return $rest({ preAction: this.signRequestFn(aURI, this.APIKEY) }).post(this.getURL() + aURI, io.readFileYAML(aFile));
+    return $rest({ preAction: this.signRequestFn(aURI, this.APIKEY) }).post(this.getURL() + aURI, (aFile.endsWith(".yaml") ? io.readFileYAML(aFile) : io.readFile(aFile)));
 };
 
 roJob.prototype.execAsync = function(aFile, aObj) {
 	aObj = merge(aObj, { __async: 1 });
 	var aURI = "/ojob?" + $rest().query(aObj);
-    return $rest({ preAction: this.signRequestFn(aURI, this.APIKEY) }).post(this.getURL() + aURI, io.readFileYAML(aFile));
+    return $rest({ preAction: this.signRequestFn(aURI, this.APIKEY) }).post(this.getURL() + aURI, (aFile.endsWith(".yaml") ? io.readFileYAML(aFile) : io.readFile(aFile)));
 };
 
 roJob.prototype.run = function(aFile, aObj) {
@@ -99,26 +99,63 @@ roJob.prototype.runAsync = function(aFile, aObj) {
     return $rest({ preAction: this.signRequestFn(aURI, this.APIKEY) }).post(this.getURL() + aURI, aFile);
 };
 
+/**
+ * <odoc>
+ * <key>roJob.listNodes() : Map</key>
+ * Returns a list of the existing nodes.
+ * </odoc>
+ */
 roJob.prototype.listNodes = function() {
    return this.run("rojob/listnodes.yaml");
 };
 
+/**
+ * <odoc>
+ * <key>roJob.listWork(aPath) : Map</key>
+ * Returns a list of the files on the remote work folder on aPath.
+ * </odoc>
+ */
 roJob.prototype.listWork = function(aPath) {
    return this.run("rojob/listwork.yaml", { path: aPath });
 };
 
+/**
+ * <odoc>
+ * <key>roJob.getMemory(notFormat) : Map</key>
+ * Returns a map with the java heap memory stats. Optionally if notFormat = true values will be returned in bytes instead of human readable.
+ * </odoc>
+ */
 roJob.prototype.getMemory = function(notFormat) {
 	return this.run("rojob/getmem.yaml", { format: !notFormat });
 };
 
+/**
+ * <odoc>
+ * <key>roJob.cleanWork(aPath) : Map</key>
+ * Cleans all files on the remote work folder under aPath.
+ * </odoc>
+ */
 roJob.prototype.cleanWork = function(aPath) {
    return this.run("rojob/cleanwork.yaml", { path: aPath });
 };
 
+/**
+ * <odoc>
+ * <key>roJob.killJob(aJob) : Map</key>
+ * Tries to stop a remote aJob.
+ * </odoc>
+ */
 roJob.prototype.killJob = function(aJob) {
    return this.run("rojob/killjob.yaml", { job: aJob });
 };
 
+/**
+ * <odoc>
+ * <key>roJob.getResult(aUUID, shouldClean) : Map</key>
+ * Returns the result of a async job, identified by aUUID. Optionally the result can be cleaned
+ * from the remote work folder.
+ * </odoc>
+ */
 roJob.prototype.getResult = function(aUUID, shouldClean) {
    var res = this.run("rojob/getresult.yaml", { uuid: aUUID });
    if (shouldClean && isUnDef(res.__error)) this.run("rojob/cleanresult.yaml", { uuid: aUUID });

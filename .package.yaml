@@ -17,7 +17,7 @@ name: roJob
 main: main.js
 mainJob: ''
 license: 'https://raw.githubusercontent.com/OpenAF/roJob/master/LICENSE'
-version: '20190904'
+version: '20190910'
 dependencies:
   openaf: '>=20190901'
   oJob-common: '>=20190812'
@@ -41,6 +41,7 @@ files:
   - rojob.js
   - rojob.py.sample2
   - rojob.py.sample3
+  - roJob.yaml
   - roJobService.js
   - run/in/gitclone.yaml
   - run/in/zipfolder.yaml
@@ -60,7 +61,7 @@ files:
   - run/rojob/stopall.yaml
   - watchdog.yaml.sample
 filesHash:
-  .odoc.db: cb2f43ca95efcca480d644be0207e0393eb7a671
+  .odoc.db: 354cc35a3d541c6d1e841fd76a0fd73a191486a6
   docker-compose.yaml.sample: 9dbc920e75f12a5787a820baf19976d1eb5f770a
   Dockerfile: 9fc113787e2d4894ce71ea0dd583b87b5db00b7d
   examples/copyOpenAFRepos.yaml: c0de8f5212a1d20da9cb9a3fc76b816a8425d554
@@ -75,9 +76,10 @@ filesHash:
   LICENSE: 7df059597099bb7dcf25d2a9aedfaf4465f72d8d
   main.js: 61c6f157d4f364f971fd34543e95182a8e7349c2
   README.md: 03ad01e098733f18d3120745f8b8874c532f8770
-  rojob.js: 27c7cf4c06d0814f263bedc4933de60bca29926c
+  rojob.js: 24733173312cf48febda5f37104991eb93b9f188
   rojob.py.sample2: fea15f1e17e566976f3943c8eba1c0d049a8b419
   rojob.py.sample3: 01d151d05e098b0d4d2b1d864366245a9263dfa1
+  roJob.yaml: e979f3378922c401421abd04277f36e9921d43dc
   roJobService.js: 43e948f37a50f995a9fd4a86a057381e9bee51d4
   run/in/gitclone.yaml: 2a9ffbb5371da823ca3954777bb44657588e03b8
   run/in/zipfolder.yaml: 7dd205e3967c952b4306fbbe8d837ca9421c77de

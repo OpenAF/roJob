@@ -1,0 +1,184 @@
+jobs:
+  #-----------------
+  - name: roJob Exec
+    help: >
+      Tries to execute a oJob remotely. Expects:
+      
+        url    (String/Array)  An url or an array of urls os roJob services
+        apikey (String)        The roJob API key to use.
+        file   (String)        The filepath for a yaml/json file to execute remotely
+        rojob  (Map)           The oJob map to execute remotely
+        rargs  (Map)           The remote oJob arguments.
+        async  (Boolean)       Determines if a roJob should be executed async (defaults to false)
+
+      Returns:
+
+        res    (Map)           A map with the roJob execution response.
+    exec: |
+      if (isUnDef(args.file) && isUnDef(args.rojob)) throw "Please provide a file or a ojob.";
+
+      loadLib("rojob.js");
+      var rj = new roJob(args.url, args.apikey);
+
+      if (isDef(args.rojob) && isMap(args.rojob)) {
+        if (isDef(args.async)) args.rojob.rojob.async = true;
+        args.res = rj.execJob(args.rojob, args.rargs);
+      } else {
+        if (isDef(args.async)) {
+          args.res = rj.execAsync(args.file, args.rargs);
+        } else {
+          args.res = rj.exec(args.file, args.rargs);
+        }
+      }
+
+  #----------------
+  - name: roJob Run
+    help: >
+      Tries to execute a oJob remotely. Expects:
+      
+        url    (String/Array)  An url or an array of urls os roJob services
+        apikey (String)        The roJob API key to use.
+        file   (String)        The relative run filepath to execute remotely
+        rargs  (Map)           The remote oJob arguments.
+        async  (Boolean)       Determines if a roJob should be executed async (defaults to false)
+
+      Returns:
+
+        res    (Map)           A map with the roJob execution response.
+    exec: |
+      if (isUnDef(args.file)) throw "Please provide a file.";
+      args.url = _$(args.url).default(void 0);
+      args.apikey = _$(args.apikey).default(void 0);
+
+      loadLib("rojob.js");
+      var rj = new roJob(args.url, args.apikey);
+
+      if (args.async) {
+        args.res = rj.runAsync(args.file, args.rargs);
+      } else {
+        args.res = rj.run(args.file, args.rargs);
+      }
+
+  #-----------------------
+  - name: roJob List nodes
+    help: >
+      Returns a list of the existing nodes.
+    to  : roJob Run
+    args:
+      file: rojob/listnodes.yaml
+
+  #----------------------
+  - name: roJob List work
+    help: >
+      Returns a list of the files on the remote work folder on path. Expects:
+        
+        path  (String)  The remote work folder path.
+    to  : roJob Run
+    args:
+      file: rojob/listwork.yaml
+    exec: |
+      args.rargs = { path: args.path };
+
+  #-----------------------
+  - name: roJob Get memory
+    help: >
+      Returns a map with the java heap memory stats. Expects:
+      
+        notFormat  (Boolean)  If notFormat = true values will be returned in bytes instead of human readable.
+    to  : roJob Run
+    args:
+      file: rojob/getmem.yaml   
+    exec: |
+      args.rargs = { format: !args.notFormat };   
+
+  #-----------------------
+  - name: roJob Clean work
+    help: >
+      Cleans all files on the remote work folder under a path. Expects:
+
+        work  (String)  The remote work folder path.
+    to  : roJob Run
+    args:
+      file: rojob/cleanwork.yaml
+    exec: |
+      args.rargs = { path: args.path };
+
+  #---------------------
+  - name: roJob Kill job
+    help: >
+      Tries to stop a remote job. Expects:
+
+        job   (String)  The job id string.
+    to  : roJob Run
+    args:
+      file: rojob/killjob.yaml
+    exec: |
+      args.rargs = { job: args.job };
+
+  #-----------------------
+  - name: roJob Get result
+    help: >
+      Returns the result of a async job, identified by aUUID. Optionally the result can be cleaned
+      from the remote work folder. Expects:
+       
+        uuid        (String)   The async job UUID.
+        shouldClean (Boolean)  If true the result will be cleaned from the remote work folder.
+    args:
+      file: rojob/getresult.yaml
+    exec: |
+      args.url = _$(args.url).default(void 0);
+      args.apikey = _$(args.apikey).default(void 0);
+
+      loadLib("rojob.js");
+      var rj = new roJob(args.url, args.apikey);
+      args.res = rj.getResult(args.uuid, args.shouldClean);
+
+  #-------------------------
+  - name: roJob Set init job
+    to  : roJob Run
+    args:
+      file: rojob/setinitjob.yaml
+    exec: |
+      args.rargs = { name: args.name, job: io.readFileString(args.file) };
+
+  #---------------------------
+  - name: roJob Clean init job
+    to  : roJob Run
+    args:
+      file: rojob/clearinitjobs.yaml
+  
+  #---------------------
+  - name: roJob Add node
+    to  : roJob Run
+    args:
+      file: rojob/addnode.yaml
+    exec: |
+      args.rargs = { host: args.host, port: args.port };
+
+  #----------------------
+  - name: roJob Show vars
+    to  : roJob Run
+    args:
+      file: rojob/showvars.yaml
+  
+  #-----------------
+  - name: roJob Stop
+    to  : roJob Run
+    args:
+      file: rojob/stop.yaml
+
+  #---------------------
+  - name: roJob Stop all
+    to  : roJob Run
+    args:
+      file: rojob/stopall.yaml
+
+  #-------------------------
+  - name: roJob Print result
+    exec: |
+      if (args.json) {
+        sprint(args.res);
+      } else {
+        print(af.toYAML(args.res));
+      }
+  
