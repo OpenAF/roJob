@@ -72,7 +72,7 @@ filesHash:
   examples/sleep.yaml: 7672cad4e4c2aaab3a2f427d16d4abd97e42d036
   examples/tellTimeDaemon.yaml: c0c5992db6d45334bc1bba407fd194604cd3ed6d
   genScripts.yaml: 698a65c8a7f9accaaca6035cd659ce5d086d99ab
-  kube_deployment.yaml.sample: 9985f6dee40680010617882b37951c4f5477aa49
+  kube_deployment.yaml.sample: a9d79d8c27850863607c0fecc509eea1f25c8acc
   LICENSE: 7df059597099bb7dcf25d2a9aedfaf4465f72d8d
   main.js: 61c6f157d4f364f971fd34543e95182a8e7349c2
   README.md: 03ad01e098733f18d3120745f8b8874c532f8770

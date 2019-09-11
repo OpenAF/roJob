@@ -31,4 +31,10 @@ spec:
         ports:
         - containerPort: 8787
           protocol: TCP
+        #volumeMounts:
+        #- mountPath: /work
+        #  name     : work
         resources: {}
+      #volumes:
+      #  - name: work
+      #    emptyDir: {}
