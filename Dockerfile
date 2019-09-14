@@ -2,6 +2,7 @@ FROM openaf/openaf:nightly
 
 ADD  run /openaf/roJob/run
 COPY rojob.js /openaf/roJob/rojob.js
+COPY roJob.yaml /openaf/roJob/roJob.yaml
 COPY .odoc.db /openaf/roJob/.odoc.db
 COPY roJobService.js /openaf/roJob/roJobService.js
 
