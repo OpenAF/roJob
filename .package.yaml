@@ -62,7 +62,7 @@ files:
   - run/rojob/listwork.yaml
 filesHash:
   genScripts.yaml: 698a65c8a7f9accaaca6035cd659ce5d086d99ab
-  roJob.yaml: e979f3378922c401421abd04277f36e9921d43dc
+  roJob.yaml: e1798b4aa07e1748734d8737d7ad87925745cf02
   LICENSE: 7df059597099bb7dcf25d2a9aedfaf4465f72d8d
   Dockerfile: 0d802a7b71082a5bdbd96d1c803714dc46fdaf0a
   kube_deployment.yaml.sample: a9d79d8c27850863607c0fecc509eea1f25c8acc

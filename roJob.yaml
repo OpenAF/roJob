@@ -18,7 +18,11 @@ jobs:
       if (isUnDef(args.file) && isUnDef(args.rojob)) throw "Please provide a file or a ojob.";
 
       loadLib("rojob.js");
-      var rj = new roJob(args.url, args.apikey);
+      var rj;
+      if (isUnDef(args.url) && isUnDef(args.apikey) && isDef(global.ROJOB) && isDef(global.ROJOB.client))
+        rj = global.ROJOB.client;
+      else
+        rj = new roJob(args.url, args.apikey);
 
       if (isDef(args.rojob) && isMap(args.rojob)) {
         if (isDef(args.async)) args.rojob.rojob.async = true;
@@ -51,7 +55,11 @@ jobs:
       args.apikey = _$(args.apikey).default(void 0);
 
       loadLib("rojob.js");
-      var rj = new roJob(args.url, args.apikey);
+      var rj;
+      if (isUnDef(args.url) && isUnDef(args.apikey) && isDef(global.ROJOB) && isDef(global.ROJOB.client))
+        rj = global.ROJOB.client;
+      else
+        rj = new roJob(args.url, args.apikey);
 
       if (args.async) {
         args.res = rj.runAsync(args.file, args.rargs);
