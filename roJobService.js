@@ -14,6 +14,7 @@ var args = merge(getEnvs(), params);
 var lastRequest = nowUTC();
 var lastCheck = nowUTC();
 var stopping = false;
+var running = false;
 
 // Check variables
 args.LISTEN         = _$(args.LISTEN).default("127.0.0.1");
@@ -205,87 +206,94 @@ function fnReply(idxs, data, req, origData) {
 		var res = void 0;
 			__pm = {};
 			
-		var lockRes = ls.whenUnLocked("single", () => {
-			var pro = $do(() => {
-				var shouldRun = true;
-				if (isDef(data.rojob.unique) && data.rojob.unique) {
-					var others = $from(io.listFiles(args.WORK + "/.rojob").files)
-								 .ends("filename", "-" + data.rojob.name + ".unique")
-								 .select((r) => { return r.filename; });
-					if (others.length <= 0) {
-						var uuidUnique = host + "-" + args.PORT + "-" + data.rojob.name + ".unique";
-						io.writeFileString(args.WORK + "/.rojob/" + uuidUnique, {
-							uuid   : uuidUnique,
+		var lockRes;
+		if (!running) {
+			lockRes = ls.whenUnLocked("single", () => {
+				running = true;
+
+				var pro = $do(() => {
+					var shouldRun = true;
+					if (isDef(data.rojob.unique) && data.rojob.unique) {
+						var others = $from(io.listFiles(args.WORK + "/.rojob").files)
+									 .ends("filename", "-" + data.rojob.name + ".unique")
+									 .select((r) => { return r.filename; });
+						if (others.length <= 0) {
+							var uuidUnique = host + "-" + args.PORT + "-" + data.rojob.name + ".unique";
+							io.writeFileString(args.WORK + "/.rojob/" + uuidUnique, {
+								uuid   : uuidUnique,
+								created: new Date()
+							});
+						} else {
+							log("Unique job already running (" + others.join(",") + ")");
+							shouldRun = false;
+						}
+					}
+					if (shouldRun) {
+						io.writeFile(args.WORK + "/.rojob/" + uuid + ".rojob", { 
+							uuid   : uuid,
 							created: new Date()
 						});
-					} else {
-						log("Unique job already running (" + others.join(",") + ")");
-						shouldRun = false;
+						log("Job " + uuid + " started.");
+		
+						$tb(() => {
+							__pm = merge(__pm, data.args);
+							oJobRun(data, data.args, uuid);
+							return 1;
+						})
+						.stopWhen(() => {
+							var resFile = !(io.fileExists(args.WORK + "/.rojob/" + uuid + ".rojob"));
+							if (resFile) {
+								log("Stopping job " + uuid + ".rojob");
+								ow.oJob.stop();
+								if (!stopping) restartOpenAF();
+							}
+							return resFile;
+						})
+						.exec();
 					}
-				}
-				if (shouldRun) {
-					io.writeFile(args.WORK + "/.rojob/" + uuid + ".rojob", { 
-						uuid   : uuid,
-						created: new Date()
-					});
-					log("Job " + uuid + " started.");
 	
-					$tb(() => {
-						__pm = merge(__pm, data.args);
-						oJobRun(data, data.args, uuid);
-						return 1;
-					})
-					.stopWhen(() => {
-						var resFile = !(io.fileExists(args.WORK + "/.rojob/" + uuid + ".rojob"));
-						if (resFile) {
-							log("Stopping job " + uuid + ".rojob");
-							ow.oJob.stop();
-							if (!stopping) restartOpenAF();
+					return shouldRun;
+				})
+				.then((shouldRun) => {
+					running = false;
+					ow.oJob.stop();
+	
+					io.rm(args.WORK + "/.rojob/" + uuid + ".rojob");
+					if (isDef(data.rojob.unique) && data.rojob.unique) {
+						var uuidUnique = host + "-" + args.PORT + "-" + data.rojob.name + ".unique";
+						io.rm(args.WORK + "/.rojob/" + uuidUnique);
+					}
+					if (shouldRun) {
+						log("Job " + uuid + " ended.");
+	
+						if (async) {
+							res = clone(__pm);
+							io.writeFile(args.WORK + "/.rojob/" + uuid + ".result", res);
+							if (!stopping) restartOpenAF(); 
+						} else {
+							if (isDef(ow.oJob.runAllShutdownJobs)) ow.oJob.runAllShutdownJobs();
 						}
-						return resFile;
-					})
-					.exec();
-				}
-
-				return shouldRun;
-			})
-			.then((shouldRun) => {
-				ow.oJob.stop();
-
-				io.rm(args.WORK + "/.rojob/" + uuid + ".rojob");
-				if (isDef(data.rojob.unique) && data.rojob.unique) {
-					var uuidUnique = host + "-" + args.PORT + "-" + data.rojob.name + ".unique";
-					io.rm(args.WORK + "/.rojob/" + uuidUnique);
-				}
-				if (shouldRun) {
-					log("Job " + uuid + " ended.");
-
-					if (async) {
-						res = clone(__pm);
-						io.writeFile(args.WORK + "/.rojob/" + uuid + ".result", res);
-						if (!stopping) restartOpenAF(); 
-					} else {
-						if (isDef(ow.oJob.runAllShutdownJobs)) ow.oJob.runAllShutdownJobs();
+					}
+				})
+				.catch((e) => {
+					running = false;
+					logErr("Error in job " + uuid + ": " + stringify(e));
+					ow.oJob.stop();
+				});
+				if (async) {
+					res = { uuid: uuid };
+				} else {
+					$doWait(pro);
+					res = clone(__pm);
+					if (args.SHOWERRORS == "true") {
+						var errs = $from($ch("oJob::log").getAll()).equals("error", true).select((r) => { return { name: r.name, error: $path(r.log, "[].error") } });
+						if (errs.length > 0) {
+							res.__errors = errs;
+						}
 					}
 				}
-			})
-			.catch((e) => {
-				logErr("Error in job " + uuid + ": " + stringify(e));
-				ow.oJob.stop();
-			});
-			if (async) {
-				res = { uuid: uuid };
-			} else {
-				$doWait(pro);
-				res = clone(__pm);
-				if (args.SHOWERRORS == "true") {
-					var errs = $from($ch("oJob::log").getAll()).equals("error", true).select((r) => { return { name: r.name, error: $path(r.log, "[].error") } });
-					if (errs.length > 0) {
-						res.__errors = errs;
-					}
-				}
-			}
-		}, 50, 1);
+			}, 50, 1);
+		}
 
 		var cleanup = () => {
 			$ch("oJob::log").unsetAll(["ojobId", "name"], $from($ch("oJob::log").getAll()).starts("ojobId", ow.oJob.getID()).select());

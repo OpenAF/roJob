@@ -17,7 +17,7 @@ name: roJob
 main: main.js
 mainJob: ''
 license: 'https://raw.githubusercontent.com/OpenAF/roJob/master/LICENSE'
-version: '20190914'
+version: '20191005'
 dependencies:
   openaf: '>=20190901'
   oJob-common: '>=20190812'
@@ -72,7 +72,7 @@ filesHash:
   README.md: 03ad01e098733f18d3120745f8b8874c532f8770
   main.js: 61c6f157d4f364f971fd34543e95182a8e7349c2
   docker-compose.yaml.sample: 9dbc920e75f12a5787a820baf19976d1eb5f770a
-  roJobService.js: 43e948f37a50f995a9fd4a86a057381e9bee51d4
+  roJobService.js: bf35842658ac4c382e8b501d17db44996c11f957
   examples/echo.yaml: ac27c8dfc906ece0bb07106ef6a08617cbc9f149
   examples/getChuckNorrisJoke.yaml: 4a98b49da3afcfed88ed9566256270b0b7b12679
   examples/getPublicIP.yaml: ffb8935f6cd20f437851cbd7b3edb99b81a1419f
