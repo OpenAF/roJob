@@ -34,6 +34,7 @@ args.INIT           = _$(args.INIT).default("true");
 args.INITCHECK      = _$(args.INITCHECK).default(void 0);
 args.RUNONLY        = _$(args.RUNONLY).default("false");
 args.SHOWERRORS     = _$(args.SHOWERRORS).default("true");
+args.QUEUECH        = _$(args.QUEUECH).default(void 0);
 
 // Ensure the work exists
 io.mkdir(args.WORK);
@@ -83,6 +84,29 @@ if (args.PRIVATE == "true") {
 	logWarn("Private mode on. No API key check is performed.");
 }
 
+// Queue check
+var queue;
+if (isDef(args.QUEUECH)) { 
+	var chArgs = {};
+	var chName = "roJob_" + args.CNAME;
+	log("Connecting to queue " + chName + "...");
+	splitBySeparator(args.QUEUECH, ",").forEach(v => {
+		var m = splitBySeparator(v, ":");
+		chArgs[m[0]] = m[1];
+	});
+	if (isDef(chArgs.opack)) {
+		log("Checking opack " + chArgs.opack + "...");
+		includeOPack(chArgs.opack, chArgs.opackMinVer);
+	}
+	if (isDef(chArgs.load)) {
+		log("Loading " + chArgs.load + "...");
+		load(chArgs.load);
+	}
+	$ch(chName).create(1, chArgs.type, chArgs);
+	queue = new ow.server.queue({ type: "queue", cname: chName }, void 0, chName);
+	args.FORK = "false";
+}
+
 // Global variables
 global.ROJOB = {
 	HOST: host,
@@ -120,8 +144,9 @@ global.ROJOB.cluster = cluster;
 global.ROJOB.client = new roJob("http://" + global.ROJOB.HOST + ":" + global.ROJOB.PORT, args.APIKEY);
 
 // Functions
-//
+// ---------
 
+// API Authorization Sign
 function signAuthorization(aURI, data) {
 	if (isDef(args.APIKEY)) {
 		if (isString(data)) data = data.replace(/[\n \t\r]+$/, "");
@@ -144,6 +169,7 @@ function signAuthorization(aURI, data) {
 	}
 }
 
+// API Request Sign
 function signRequest(r, data) {
 	return this.signAuthorization(r.originalURI, data);
 }
@@ -157,7 +183,7 @@ function validatePath(aPath, aTest) {
 	}
 }
 
-function fnReply(idxs, data, req, origData) {
+function fnReply(idxs, data, req, origData, noCheck) {
 	var sendOthers = (aData, aMap) => {
 		var verb = "/ojob";
 
@@ -172,7 +198,7 @@ function fnReply(idxs, data, req, origData) {
 	};
 
 	try {
-		if (args.PRIVATE != "true") {
+		if (args.PRIVATE != "true" && !noCheck) {
 			var auth = signRequest(req, jsonParse(origData));
 			if (req.header.auth != auth) {
 				logErr("Wrong auth received: " + req.header.auth + " expected " + auth);
@@ -355,7 +381,21 @@ function fnReply(idxs, data, req, origData) {
 						stores = { result: 0 };
 					}
 				} else {
-					stores = { result: 0 };
+					if (isDef(args.QUEUECH) && async) {
+						log("Queueing job... " + queue.send({
+							idxs    : idxs, 
+							data    : data, 
+							req     : req, 
+							origData: origData
+						}));
+						stores = {
+							result: 1,
+							queue : true
+						};
+					} else {
+						log("Rejecting job...");
+						stores = { result: 0 };
+					}
 				}
 			}
 			$do(cleanup);
@@ -503,18 +543,36 @@ function checkInit() {
 }
 checkInit();
 
-ow.server.daemon(5000, () => { 
+const daemonWait = 5000;
+ow.server.daemon(daemonWait, () => { 
+	// Cluster verification
 	cluster.verify(); 
+
+	// PID verification
 	if (!(io.fileExists(args.PID + ".pid"))) {
 		stopping = true;
 		return true;
 	}
+
+	// Fork verification
 	if (args.SUB == "true" && (nowUTC() - lastRequest) > (1 * 60 * 1000)) {
 		stopping = true;
 		return true;
 	}
+
+	// Stall verification
 	if (isDef(args.INITCHECK) && (nowUTC() - lastCheck) > (args.INITCHECK * 1000)) {
 		checkInit();
 	}
+
+	// Queue processing
+	if (isDef(queue) && !running) {
+		var res = queue.receive(void 0, daemonWait - 500, 1000);
+		if (isDef(res)) {
+			log("Handling queued entry " + res.idx);
+			fnReply(res.obj.idxs, res.obj.data, res.obj.req, res.obj.origData, true);
+		}
+	}
+
 	return false; 
 });

@@ -29,6 +29,7 @@ In all cases there are common arguments or environment variables to configure:
 | RUNONLY | false | Enforces that only jobs under the run folder can be executed. |
 | SHOWERRORS | true | If there is any error during jobs execution it will be appended to the result in the entry __errors |
 | FALLBACKS | | A comma delimited list of other roJobs "host:port" that despite not making part of the cluster requests can be redirect to. |
+| QUEUECH | | (Experimental) A comma delimited list of a channel based queue. The list should include "type" for the channel and, optionally, "load" for any additional lib that might be needed and "opack" to ensure an opack is installed. If defined the FORK option will be disabled. Example: "opack:etcd3,load:etcd3.js,type:etcd3,host:127.0.0.1,port:2379" |
 
 ## Using roJob
 
