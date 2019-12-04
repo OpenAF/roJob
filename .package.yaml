@@ -22,79 +22,81 @@ dependencies:
   openaf: '>=20190901'
   oJob-common: '>=20190812'
 files:
-  - genScripts.yaml
-  - roJob.yaml
   - LICENSE
-  - Dockerfile
-  - kube_deployment.yaml.sample
   - rojob.js
   - watchdog.yaml.sample
-  - .package.yaml
-  - .odoc.db
-  - README.md
-  - main.js
   - docker-compose.yaml.sample
+  - main.js
   - roJobService.js
-  - examples/echo.yaml
+  - .package.yaml
+  - README.md
+  - roJob.yaml
+  - rojob.py.sample3
+  - Dockerfile
+  - rojob.py.sample2
+  - Dockerfile.arm
+  - genScripts.yaml
+  - .odoc.db
+  - kube_deployment.yaml.sample
   - examples/getChuckNorrisJoke.yaml
-  - examples/getPublicIP.yaml
   - examples/sleep.yaml
   - examples/tellTimeDaemon.yaml
-  - examples/copyOpenAFRepos.yaml
   - examples/getTime.yaml
-  - rojob.py.sample2
-  - rojob.py.sample3
-  - run/in/zipfolder.yaml
-  - run/in/gitclone.yaml
-  - run/rojob/echo.yaml
-  - run/rojob/getmem.yaml
-  - run/rojob/setinitjob.yaml
-  - run/rojob/killjob.yaml
+  - examples/copyOpenAFRepos.yaml
+  - examples/echo.yaml
+  - examples/getPublicIP.yaml
+  - run/rojob/clearinitjobs.yaml
   - run/rojob/cleanresult.yaml
+  - run/rojob/cleanwork.yaml
   - run/rojob/showvars.yaml
   - run/rojob/listnodes.yaml
-  - run/rojob/stopall.yaml
-  - run/rojob/clearinitjobs.yaml
   - run/rojob/getresult.yaml
   - run/rojob/stop.yaml
-  - run/rojob/cleanwork.yaml
-  - run/rojob/addnode.yaml
+  - run/rojob/setinitjob.yaml
+  - run/rojob/echo.yaml
+  - run/rojob/stopall.yaml
+  - run/rojob/killjob.yaml
   - run/rojob/listwork.yaml
+  - run/rojob/addnode.yaml
+  - run/rojob/getmem.yaml
+  - run/in/zipfolder.yaml
+  - run/in/gitclone.yaml
 filesHash:
-  genScripts.yaml: 698a65c8a7f9accaaca6035cd659ce5d086d99ab
-  roJob.yaml: e1798b4aa07e1748734d8737d7ad87925745cf02
   LICENSE: 7df059597099bb7dcf25d2a9aedfaf4465f72d8d
-  Dockerfile: 0d802a7b71082a5bdbd96d1c803714dc46fdaf0a
-  kube_deployment.yaml.sample: a9d79d8c27850863607c0fecc509eea1f25c8acc
   rojob.js: 24733173312cf48febda5f37104991eb93b9f188
   watchdog.yaml.sample: 8c6736cd39d05445e511763390c0ec10bec57761
-  .odoc.db: 354cc35a3d541c6d1e841fd76a0fd73a191486a6
-  README.md: 25344a2f50a4844918492e40b7467016070e7931
-  main.js: 61c6f157d4f364f971fd34543e95182a8e7349c2
   docker-compose.yaml.sample: 9dbc920e75f12a5787a820baf19976d1eb5f770a
+  main.js: 61c6f157d4f364f971fd34543e95182a8e7349c2
   roJobService.js: 09fd51917e5479786a31474e910e13db5585eafd
-  examples/echo.yaml: ac27c8dfc906ece0bb07106ef6a08617cbc9f149
+  README.md: 25344a2f50a4844918492e40b7467016070e7931
+  roJob.yaml: e1798b4aa07e1748734d8737d7ad87925745cf02
+  rojob.py.sample3: 01d151d05e098b0d4d2b1d864366245a9263dfa1
+  Dockerfile: 0d802a7b71082a5bdbd96d1c803714dc46fdaf0a
+  rojob.py.sample2: fea15f1e17e566976f3943c8eba1c0d049a8b419
+  Dockerfile.arm: bee2efa90f485f7a61ff6aee7f3c2cad7e37c842
+  genScripts.yaml: 698a65c8a7f9accaaca6035cd659ce5d086d99ab
+  .odoc.db: 354cc35a3d541c6d1e841fd76a0fd73a191486a6
+  kube_deployment.yaml.sample: a9d79d8c27850863607c0fecc509eea1f25c8acc
   examples/getChuckNorrisJoke.yaml: 4a98b49da3afcfed88ed9566256270b0b7b12679
-  examples/getPublicIP.yaml: ffb8935f6cd20f437851cbd7b3edb99b81a1419f
   examples/sleep.yaml: 7672cad4e4c2aaab3a2f427d16d4abd97e42d036
   examples/tellTimeDaemon.yaml: c0c5992db6d45334bc1bba407fd194604cd3ed6d
-  examples/copyOpenAFRepos.yaml: c0de8f5212a1d20da9cb9a3fc76b816a8425d554
   examples/getTime.yaml: 9aa8e2d7891a040570ef3f1a3e46886c6b993cd7
-  rojob.py.sample2: fea15f1e17e566976f3943c8eba1c0d049a8b419
-  rojob.py.sample3: 01d151d05e098b0d4d2b1d864366245a9263dfa1
-  run/in/zipfolder.yaml: 7dd205e3967c952b4306fbbe8d837ca9421c77de
-  run/in/gitclone.yaml: 2a9ffbb5371da823ca3954777bb44657588e03b8
-  run/rojob/echo.yaml: 66102c6963586aa8c98d2458c6b527ca6f1d86ae
-  run/rojob/getmem.yaml: 44ec004c1cccf0fdaff0656fab7d1a037d71d2ae
-  run/rojob/setinitjob.yaml: b82728f004c5bb52e57550bb4e9df2d91b8108b4
-  run/rojob/killjob.yaml: cdac3a35fcf46380af643c4374dc6cfbcfb02d89
+  examples/copyOpenAFRepos.yaml: c0de8f5212a1d20da9cb9a3fc76b816a8425d554
+  examples/echo.yaml: ac27c8dfc906ece0bb07106ef6a08617cbc9f149
+  examples/getPublicIP.yaml: ffb8935f6cd20f437851cbd7b3edb99b81a1419f
+  run/rojob/clearinitjobs.yaml: 47666825ef08bffdae0c06b545423c9fb1638d72
   run/rojob/cleanresult.yaml: a4f847a133b1c03602bc16c22d29d3b08d2840bc
+  run/rojob/cleanwork.yaml: c431826fe67d0a35e468c792be0e367849cbd769
   run/rojob/showvars.yaml: f7b331ff291c12417d29cb36c2d1a63bec300d01
   run/rojob/listnodes.yaml: e2dd9f5eb5e96a64e8c921a0ec24614428271b27
-  run/rojob/stopall.yaml: 007abed0cc665c798ddf4565f1e8ce9a3f4041da
-  run/rojob/clearinitjobs.yaml: 47666825ef08bffdae0c06b545423c9fb1638d72
   run/rojob/getresult.yaml: 6f57276c603a96c82ae098ef988f51b6cc3a2ab7
   run/rojob/stop.yaml: f69a3ed28eda663895692daa9c647b43036c863f
-  run/rojob/cleanwork.yaml: c431826fe67d0a35e468c792be0e367849cbd769
-  run/rojob/addnode.yaml: 36cc6d1a31e4c215af29c1f171cdd5664edb46cf
+  run/rojob/setinitjob.yaml: b82728f004c5bb52e57550bb4e9df2d91b8108b4
+  run/rojob/echo.yaml: 66102c6963586aa8c98d2458c6b527ca6f1d86ae
+  run/rojob/stopall.yaml: 007abed0cc665c798ddf4565f1e8ce9a3f4041da
+  run/rojob/killjob.yaml: cdac3a35fcf46380af643c4374dc6cfbcfb02d89
   run/rojob/listwork.yaml: 69691b5a218479dcd49291d3f644a7643185a67d
+  run/rojob/addnode.yaml: 36cc6d1a31e4c215af29c1f171cdd5664edb46cf
+  run/rojob/getmem.yaml: 44ec004c1cccf0fdaff0656fab7d1a037d71d2ae
+  run/in/zipfolder.yaml: 7dd205e3967c952b4306fbbe8d837ca9421c77de
+  run/in/gitclone.yaml: 2a9ffbb5371da823ca3954777bb44657588e03b8
