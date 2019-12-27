@@ -16,6 +16,7 @@ jobs:
         res    (Map)           A map with the roJob execution response.
     exec: |
       if (isUnDef(args.file) && isUnDef(args.rojob)) throw "Please provide a file or a ojob.";
+      args.rargs = _$(args.rargs).isMap().default({});
 
       loadLib("rojob.js");
       var rj;
@@ -25,6 +26,7 @@ jobs:
         rj = new roJob(args.url, args.apikey);
 
       if (isDef(args.rojob) && isMap(args.rojob)) {
+        if (isUnDef(args.rojob.rojob)) args.rojob.rojob = {};
         if (isDef(args.async)) args.rojob.rojob.async = true;
         args.res = rj.execJob(args.rojob, args.rargs);
       } else {

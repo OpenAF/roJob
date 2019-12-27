@@ -26,8 +26,10 @@ services:
     networks      :
       - rojob
     environment   :
-      APIKEY: "670278dc428eefa39c818fc786bc5500d3d94a6b6d488a791ecb87323b52555d6a98117e479c82e37c123d3556623d7fef8e18a5f2c916cc7f3d5641090c5ef1"
-      WORK: /work
+      FALLBACKS: rojob:8787
+      APIKEY   : "xxxxxxx"
+      WORK     : /work
+      CONTAINER: true
 
 networks:
     rojob:

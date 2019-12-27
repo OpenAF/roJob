@@ -35,6 +35,7 @@ args.INITCHECK      = _$(args.INITCHECK).default(void 0);
 args.RUNONLY        = _$(args.RUNONLY).default("false");
 args.SHOWERRORS     = _$(args.SHOWERRORS).default("true");
 args.QUEUECH        = _$(args.QUEUECH).default(void 0);
+args.CONTAINER      = _$(args.CONTAINER).default("false");
 
 // Ensure the work exists
 io.mkdir(args.WORK);
@@ -60,7 +61,7 @@ if (isUnDef(args.CDISC)) {
 				connect = true;
 				args.CDISC = ar[1] + ":" + ar[2]; 
 			} else {
-				//io.rm(r.canonicalPath);
+				if (!args.CONTAINER) io.rm(r.canonicalPath);
 				logWarn("can't use " + ar[1] + ":" + ar[2]);
 			}
 			ii++;
@@ -198,6 +199,7 @@ function fnReply(idxs, data, req, origData, noCheck) {
 	};
 
 	try {
+		// STEP 1 - Check incoming request
 		if (args.PRIVATE != "true" && !noCheck) {
 			var auth = signRequest(req, jsonParse(origData));
 			if (req.header.auth != auth) {
@@ -228,11 +230,12 @@ function fnReply(idxs, data, req, origData, noCheck) {
 
 		if ((isDef(data.rojob) && isDef(data.rojob.async) && (data.rojob.async)) || (isDef(data.args) && isMap(data.args) && data.args.__async == 1)) async = true;
 
+		// STEP 2 - Execute request
 		// Deal with an async request
 		var res = void 0;
 			__pm = {};
 			
-		var lockRes;
+		var lockRes = false;
 		if (!running) {
 			lockRes = ls.whenUnLocked("single", () => {
 				running = true;
@@ -271,7 +274,12 @@ function fnReply(idxs, data, req, origData, noCheck) {
 							if (resFile) {
 								log("Stopping job " + uuid + ".rojob");
 								ow.oJob.stop();
-								if (!stopping) restartOpenAF();
+								if (!stopping) {
+									if (args.CONTAINER == "false") 
+										restartOpenAF();
+									else
+										exit(0);
+								}
 							}
 							return resFile;
 						})
@@ -295,7 +303,12 @@ function fnReply(idxs, data, req, origData, noCheck) {
 						if (async) {
 							res = clone(__pm);
 							io.writeFile(args.WORK + "/.rojob/" + uuid + ".result", res);
-							if (!stopping) restartOpenAF(); 
+							if (!stopping) {
+								if (args.CONTAINER == "false")
+									restartOpenAF(); 
+								else
+									exit(0);
+							}
 						} else {
 							if (isDef(ow.oJob.runAllShutdownJobs)) ow.oJob.runAllShutdownJobs();
 						}
@@ -321,6 +334,8 @@ function fnReply(idxs, data, req, origData, noCheck) {
 			}, 50, 1);
 		}
 
+		// STEP 3 - Cleanup everything or fallback/queue
+
 		var cleanup = () => {
 			$ch("oJob::log").unsetAll(["ojobId", "name"], $from($ch("oJob::log").getAll()).starts("ojobId", ow.oJob.getID()).select());
 			$ch("oJob::jobs").unsetAll(["name"], $ch("oJob::jobs").getAll());
@@ -331,7 +346,9 @@ function fnReply(idxs, data, req, origData, noCheck) {
 			var torigData = (isObject(data) ? clone(data) : data);
 			if (isUnDef(torigData.rojob) && !isString(torigData)) torigData.rojob = {};
 			if (isMap(torigData)) torigData.rojob.__redirected = true;
-			var stores = cluster.sendToOthers(torigData, sendOthers);
+
+			var stores;
+			if (isUnDef(args.QUEUECH) && !async) stores = cluster.sendToOthers(torigData, sendOthers);
 			
 			if (isUnDef(stores)) {
 				if (isDef(args.FALLBACKS)) {
@@ -401,7 +418,7 @@ function fnReply(idxs, data, req, origData, noCheck) {
 			$do(cleanup);
 			return stores;
 		} else {
-			$do(cleanup);
+			if (lockRes) $do(cleanup);
 			return res;
 		}
 	} catch(ee) {

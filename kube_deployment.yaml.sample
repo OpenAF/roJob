@@ -26,6 +26,8 @@ spec:
           value: /work
         - name: OPACKS
           value: S3
+        - name: CONTAINER
+          value: true
         image: openaf/rojob
         name: rojob
         ports:
