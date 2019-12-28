@@ -17,7 +17,7 @@ name: roJob
 main: main.js
 mainJob: ''
 license: 'https://raw.githubusercontent.com/OpenAF/roJob/master/LICENSE'
-version: '20191226'
+version: '20191227'
 dependencies:
   openaf: '>=20191002'
   oJob-common: '>=20190812'
@@ -67,7 +67,7 @@ filesHash:
   LICENSE: 7df059597099bb7dcf25d2a9aedfaf4465f72d8d
   Dockerfile: 0d802a7b71082a5bdbd96d1c803714dc46fdaf0a
   kube_deployment.yaml.sample: 3ce13d85efefc3969b5e6274534cb95a296a3e0f
-  rojob.js: 24733173312cf48febda5f37104991eb93b9f188
+  rojob.js: 574714e01661d046126004e0604119a0b26ec7fb
   watchdog.yaml.sample: 8c6736cd39d05445e511763390c0ec10bec57761
   .odoc.db: 354cc35a3d541c6d1e841fd76a0fd73a191486a6
   README.md: ffb0ccb4a341b25552e456ff4cbcd5b5d5e9814e

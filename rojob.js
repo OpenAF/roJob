@@ -5,7 +5,10 @@
  * provided. If aURL is not provided it will default to http://127.0.0.1:8787.
  * </odoc>
  */
-var roJob = function(aURL, aAPIKey) {
+var roJob = function(aURL, aAPIKey, aRetry, aRetryTime) {
+	this.retry = _$(aRetry).isNumber().default(40);
+	this.retryTime = _$(aRetryTime).isNumber().default(1500);
+
 	if (isArray(aURL)) {
 		this.urls = aURL;
 	} else {
@@ -34,6 +37,14 @@ var roJob = function(aURL, aAPIKey) {
 			this.APIKEY = io.readFileString(getOPackPath("roJob") + "/.apikey").replace(/\n/g, "");
 	   	}
    }
+};
+
+roJob.prototype.setRetry = function(aNum) {
+	this.retry = _$(aNum, "retry").isNumber().default(40);
+};
+
+roJob.prototype.setRetryTime = function(aNum) {
+	this.retryTime = _$(aNum, "retryTime").isNumber().default(1500);
 };
 
 roJob.prototype.getURL = function() {
@@ -72,31 +83,46 @@ roJob.prototype.signRequestFn = function(uri, apiKey) {
 	};
 };
 
+roJob.prototype.__req = function(aURI, aURL, aData) {
+	var res, c = this.retry;
+
+	do {
+		res = $rest({ preAction: this.signRequestFn(aURI, this.APIKEY) })
+			  .post(aURL, aData);
+		if (isDef(res.error)) {
+			c--;
+			sleep(this.retryTime, true);
+		}
+	} while(isDef(res.error) && c >= 0);
+
+	return res;
+}
+
 roJob.prototype.execJob = function(aoJob, aObj) {
 	var aURI = "/ojob?" + $rest().query(aObj);
-    return $rest({ preAction: this.signRequestFn(aURI, this.APIKEY) }).post(this.getURL() + aURI, aoJob);
+    return this.__req(aURI, this.getURL() + aURI, aoJob);
 };
 
 roJob.prototype.exec = function(aFile, aObj) {
 	var aURI = "/ojob?" + $rest().query(aObj);
-    return $rest({ preAction: this.signRequestFn(aURI, this.APIKEY) }).post(this.getURL() + aURI, (aFile.endsWith(".yaml") ? io.readFileYAML(aFile) : io.readFile(aFile)));
+    return this.__req(aURI, this.getURL() + aURI, (aFile.endsWith(".yaml") ? io.readFileYAML(aFile) : io.readFile(aFile)));
 };
 
 roJob.prototype.execAsync = function(aFile, aObj) {
 	aObj = merge(aObj, { __async: 1 });
 	var aURI = "/ojob?" + $rest().query(aObj);
-    return $rest({ preAction: this.signRequestFn(aURI, this.APIKEY) }).post(this.getURL() + aURI, (aFile.endsWith(".yaml") ? io.readFileYAML(aFile) : io.readFile(aFile)));
+    return this.__req(aURI, this.getURL() + aURI, (aFile.endsWith(".yaml") ? io.readFileYAML(aFile) : io.readFile(aFile)));
 };
 
 roJob.prototype.run = function(aFile, aObj) {
 	var aURI = "/run?" + $rest().query(aObj);
-	return $rest({ preAction: this.signRequestFn(aURI, this.APIKEY) }).post(this.getURL() + aURI, aFile);
+	return this.__req(aURI, this.getURL() + aURI, aFile);
 };
 
 roJob.prototype.runAsync = function(aFile, aObj) {
 	aObj = merge(aObj, { __async: 1 });
 	var aURI = "/run?" + $rest().query(aObj);
-    return $rest({ preAction: this.signRequestFn(aURI, this.APIKEY) }).post(this.getURL() + aURI, aFile);
+    return this.__req(aURI, this.getURL() + aURI, aFile);
 };
 
 /**
