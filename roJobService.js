@@ -235,12 +235,12 @@ function fnReply(idxs, data, req, origData, noCheck) {
 		var res = void 0;
 			__pm = {};
 			
-		var lockRes = false;
+		var lockRes = false, pro;
 		if (!running) {
 			lockRes = ls.whenUnLocked("single", () => {
 				running = true;
 
-				var pro = $do(() => {
+				pro = $do(() => {
 					var shouldRun = true;
 					if (isDef(data.rojob.unique) && data.rojob.unique) {
 						var others = $from(io.listFiles(args.WORK + "/.rojob").files)
@@ -290,7 +290,6 @@ function fnReply(idxs, data, req, origData, noCheck) {
 				})
 				.then((shouldRun) => {
 					running = false;
-					ow.oJob.stop();
 	
 					io.rm(args.WORK + "/.rojob/" + uuid + ".rojob");
 					if (isDef(data.rojob.unique) && data.rojob.unique) {
@@ -304,6 +303,7 @@ function fnReply(idxs, data, req, origData, noCheck) {
 							res = clone(__pm);
 							io.writeFile(args.WORK + "/.rojob/" + uuid + ".result", res);
 							if (!stopping) {
+								sleep(50, true);
 								if (args.CONTAINER == "false")
 									restartOpenAF(); 
 								else
@@ -313,6 +313,7 @@ function fnReply(idxs, data, req, origData, noCheck) {
 							if (isDef(ow.oJob.runAllShutdownJobs)) ow.oJob.runAllShutdownJobs();
 						}
 					}
+					ow.oJob.stop();
 				})
 				.catch((e) => {
 					running = false;
@@ -418,7 +419,9 @@ function fnReply(idxs, data, req, origData, noCheck) {
 			$do(cleanup);
 			return stores;
 		} else {
-			if (lockRes) $do(cleanup);
+			if (!async && lockRes) {
+				$do(cleanup);
+			}
 			return res;
 		}
 	} catch(ee) {
